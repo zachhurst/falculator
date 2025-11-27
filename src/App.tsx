@@ -193,7 +193,7 @@ function App() {
         <div className="text-center mb-6">
           <h2 className="text-h2 mb-2">Calculate Your Costs</h2>
           <p className="text-body text-gray-700 max-w-lg mx-auto">
-            Upload any fal.ai pricing screenshot to get instant cost breakdowns for all resolutions and pricing models. Bring your own Gemini Flash 2.0 key to stay on your quota and bypass shared rate limits.
+            Upload any fal.ai pricing screenshot to get instant cost breakdowns for all resolutions and pricing models. Bring your own API key to stay on your quota and bypass shared rate limits.
           </p>
         </div>
 
