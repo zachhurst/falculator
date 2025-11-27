@@ -7,6 +7,8 @@ import { ErrorMessage } from '@/components/ErrorMessage'
 import { AdvancedSettings } from '@/components/AdvancedSettings'
 import { Lightbox } from '@/components/Lightbox'
 import { ExamplesModal } from '@/components/ExamplesModal'
+import { PrivacyPolicyModal } from '@/components/PrivacyPolicyModal'
+import { TermsOfServiceModal } from '@/components/TermsOfServiceModal'
 import { parseImage, fileToBase64 } from '@/lib/api'
 import type { AnyPriceData } from '@/lib/api'
 
@@ -19,6 +21,8 @@ function App() {
   const [userApiKey, setUserApiKey] = useState('')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [isExamplesModalOpen, setIsExamplesModalOpen] = useState(false)
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false)
   const [clearTrigger, setClearTrigger] = useState(0)
 
   // BYOK solution - always require user key
@@ -226,9 +230,27 @@ function App() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-8 border-t border-gray-200 text-center">
+      <footer className="py-8 border-t border-gray-200 text-center space-y-3">
         <p className="text-small text-gray-500">
           Upload any fal.ai pricing screenshot - images, video, GPU time, or mixed models
+        </p>
+        <div className="flex items-center justify-center gap-4 text-small">
+          <button
+            onClick={() => setIsPrivacyModalOpen(true)}
+            className="text-gray-500 hover:text-black transition-colors"
+          >
+            Privacy Policy
+          </button>
+          <span className="text-gray-300">|</span>
+          <button
+            onClick={() => setIsTermsModalOpen(true)}
+            className="text-gray-500 hover:text-black transition-colors"
+          >
+            Terms of Service
+          </button>
+        </div>
+        <p className="text-xs text-gray-400 max-w-md mx-auto">
+          <strong>Disclaimer:</strong> Fal-culator is an independent utility tool and is not affiliated with, endorsed by, or officially connected to fal.ai.
         </p>
       </footer>
 
@@ -244,6 +266,18 @@ function App() {
       <ExamplesModal
         isOpen={isExamplesModalOpen}
         onClose={() => setIsExamplesModalOpen(false)}
+      />
+
+      {/* PRIVACY POLICY MODAL */}
+      <PrivacyPolicyModal
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
+      />
+
+      {/* TERMS OF SERVICE MODAL */}
+      <TermsOfServiceModal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
       />
     </div>
   )

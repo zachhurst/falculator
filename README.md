@@ -1,60 +1,153 @@
 # Fal-culator
 
-A modern web application that extracts pricing information from fal.ai screenshots using Google's Gemini VLM. Features a redesigned UI with advanced settings and lightbox functionality.
+A simple utility that extracts pricing information from fal.ai screenshots using Google's Gemini AI. Born from a Twitter conversation about confusing fal.ai pricing, built in 48 hours over Thanksgiving weekend.
+
+> "Not everyone wants to do equations to know price" - @atwilkinson_  
+> "Maybe a Thanksgiving project? 🤔" - @zachhurst
 
 ## Features
 
-- **Drag & drop image upload** - Support for PNG, JPG, JPEG, WebP
-- **AI-powered extraction** - Uses Gemini 1.5 Pro with structured output
-- **Clean pricing breakdown** - Shows cost per image and runs per dollar
-- **Advanced settings panel** - Configure custom parameters and preferences
-- **Lightbox functionality** - Full-screen image viewing with zoom controls
-- **Modern responsive design** - Built with Tailwind CSS and shadcn/ui components
-- **Enhanced user experience** - Improved loading states and error handling
+### Core Functionality
+- **Screenshot Analysis** - Upload any fal.ai pricing screenshot for instant parsing
+- **Multi-Model Support** - Works with image generation, video processing, GPU time, and free tier pricing
+- **Structured Output** - Clean breakdowns showing cost per image, runs per dollar, and resolution-specific pricing
+- **Real-time Processing** - Get results in seconds with visual loading states
+
+### User Experience
+- **BYOK Architecture** - Bring Your Own Key design keeps your data private
+- **No Data Collection** - We don't store your images, API keys, or usage data
+- **API Key Masking** - Your Gemini key is masked by default with reveal toggle
+- **Examples Gallery** - See sample inputs and results before trying
+- **Responsive Design** - Works perfectly on desktop and mobile devices
+
+### Security & Privacy
+- **Local Storage Only** - API keys stored in browser localStorage
+- **Direct to Google** - Keys transmitted directly to Google's servers
+- **No Server Storage** - Images processed but never saved
+- **Open Source** - Fully transparent codebase you can inspect
 
 ## Tech Stack
 
-- **Frontend**: React + Vite + TypeScript + Tailwind CSS
-- **Backend**: Supabase Edge Functions (Deno)
-- **AI**: Google Gemini 1.5 Pro
-- **Hosting**: Netlify
+- **Frontend**: React 18 + Vite + TypeScript + Tailwind CSS v4
+- **Backend**: Supabase Edge Functions (Deno runtime)
+- **AI**: Google Gemini 1.5 Flash API
+- **Hosting**: Netlify (frontend) + Supabase (functions)
+- **Icons**: Lucide React
+- **Package Manager**: pnpm
 
-## Setup
+## Quick Start
 
-### 1. Install dependencies
+### Prerequisites
+- Node.js 18+ 
+- pnpm package manager
+- Google Gemini API key
+- Supabase account (free tier works)
+
+### 1. Clone and Install
 
 ```bash
+git clone https://github.com/zachhurst/falculator.git
+cd falculator
 pnpm install
 ```
 
-### 2. Configure environment variables
+### 2. Environment Setup
 
-Copy `.env.example` to `.env` and fill in your Supabase credentials:
+Create a `.env` file in the root:
 
-```bash
-cp .env.example .env
+```env
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
-### 3. Set up Supabase secrets
+### 3. Supabase Setup
 
-Add your Gemini API key to Supabase:
-
-```bash
-npx supabase secrets set GEMINI_API_KEY=your-api-key
-```
-
-### 4. Deploy Edge Function
+Deploy the Edge Function and set your Gemini API key:
 
 ```bash
+# Deploy the function
 npx supabase functions deploy image-parser
+
+# Set your Gemini API key
+npx supabase secrets set GEMINI_API_KEY=your-gemini-api-key
 ```
 
-### 5. Run development server
+### 4. Run Locally
 
 ```bash
 pnpm dev
 ```
 
+Visit `http://localhost:5173` and start using Fal-culator!
+
+## How It Works
+
+1. **Upload Screenshot** - Drag & drop or select any fal.ai pricing image
+2. **AI Processing** - Image is sent to Gemini via Supabase Edge Function
+3. **Structured Output** - Get clean pricing breakdowns for all models/resolutions
+4. **Cost Calculations** - See cost per image, runs per $10, and total estimates
+
+### Supported Pricing Models
+- **Per Megapixel** - Image generation with resolution-based scaling
+- **Per Second Video** - Video processing with duration-based pricing  
+- **Per Image** - Flat rate per image regardless of resolution
+- **GPU Time** - Hourly GPU rental costs
+- **Free Tiers** - Usage limits and quota information
+
+## Architecture
+
+### BYOK (Bring Your Own Key) Design
+- Users provide their own Gemini API key
+- Keys never touch our servers
+- Direct browser → Google API communication
+- Users stay on their own pricing quotas
+
+### Privacy-First Approach
+- No cookies or tracking
+- No analytics or data collection
+- Images processed but never stored
+- API keys stored locally in browser only
+
 ## Deployment
 
-The frontend is configured for Netlify deployment. Push to your connected Git repository to trigger a deploy.
+### Netlify (Recommended)
+1. Connect your GitHub repository to Netlify
+2. Set environment variables in Netlify dashboard
+3. Deploy automatically on push to main branch
+
+### Manual Build
+```bash
+pnpm build
+# Deploy dist/ folder to your hosting provider
+```
+
+## Contributing
+
+This is an open source project! Contributions are welcome:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+MIT License - feel free to use this code for your own projects.
+
+## Support
+
+- 🐛 **Bug Reports**: Open an issue on GitHub
+- 💡 **Feature Requests**: Open an issue with the "enhancement" label
+- 📧 **Security Issues**: Please report privately
+
+## Acknowledgments
+
+- **@atwilkinson_** - For calling out confusing fal.ai pricing
+- **@GiusMarci** - For agreeing that per-second image pricing is weird
+- **Google** - For the Gemini 1.5 Flash API
+- **Supabase** - For excellent Edge Functions
+- **fal.ai** - For the complex pricing that inspired this tool
+
+---
+
+**Built with ❤️ in 48 hours over Thanksgiving weekend**
