@@ -17,21 +17,45 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [isKeyFocused, setIsKeyFocused] = useState(false);
 
-  // Load API key from localStorage on mount
+  // One-time migration from old single-key system
   useEffect(() => {
     try {
-      const savedKey = localStorage.getItem('falculator-api-key');
-      const savedProvider = localStorage.getItem('falculator-api-provider') as AIProvider || 'gemini';
+      const migrationComplete = localStorage.getItem('falculator-migrated');
+      if (!migrationComplete) {
+        // Check if we need to migrate from old single-key system
+        const oldKey = localStorage.getItem('falculator-api-key');
+        const oldProvider = localStorage.getItem('falculator-api-provider') as AIProvider || 'gemini';
+        
+        if (oldKey) {
+          // Migrate to provider-prefixed keys
+          localStorage.setItem(`falculator-api-key-${oldProvider}`, oldKey);
+          localStorage.removeItem('falculator-api-key');
+          localStorage.removeItem('falculator-api-provider');
+        }
+        
+        localStorage.setItem('falculator-migrated', 'true');
+      }
+    } catch (err) {
+      console.warn('Could not migrate API keys:', err);
+    }
+  }, []);
+
+  // Load API key for current provider
+  useEffect(() => {
+    try {
+      const savedKey = localStorage.getItem(`falculator-api-key-${provider}`);
       
       if (savedKey) {
         setApiKey(savedKey);
-        setProvider(savedProvider);
-        onApiKeyChange({ provider: savedProvider, key: savedKey });
+        onApiKeyChange({ provider, key: savedKey });
+      } else {
+        setApiKey('');
+        onApiKeyChange(undefined);
       }
     } catch (err) {
       console.warn('Could not load saved API key:', err);
     }
-  }, [onApiKeyChange]);
+  }, [onApiKeyChange, provider]);
 
   // Update open state when forceOpen changes
   useEffect(() => {
@@ -43,14 +67,12 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
   const handleKeyChange = (value: string) => {
     setApiKey(value);
     
-    // Save to localStorage for persistence
+    // Save to provider-specific localStorage for persistence
     try {
       if (value) {
-        localStorage.setItem('falculator-api-key', value);
-        localStorage.setItem('falculator-api-provider', provider);
+        localStorage.setItem(`falculator-api-key-${provider}`, value);
       } else {
-        localStorage.removeItem('falculator-api-key');
-        localStorage.removeItem('falculator-api-provider');
+        localStorage.removeItem(`falculator-api-key-${provider}`);
       }
     } catch (err) {
       console.warn('Could not save API key to localStorage:', err);
@@ -73,8 +95,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
       if (isLikelyPassword) {
         // Clear if it looks like a password was accidentally pasted
         setApiKey('');
-        localStorage.removeItem('falculator-api-key');
-        localStorage.removeItem('falculator-api-provider');
+        localStorage.removeItem(`falculator-api-key-${provider}`);
         onApiKeyChange(undefined);
         return;
       }
@@ -87,8 +108,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
   const clearSavedKey = () => {
     setApiKey('');
     try {
-      localStorage.removeItem('falculator-api-key');
-      localStorage.removeItem('falculator-api-provider');
+      localStorage.removeItem(`falculator-api-key-${provider}`);
     } catch (err) {
       console.warn('Could not clear saved API key:', err);
     }
@@ -162,10 +182,15 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                     onChange={(e) => {
                       const newProvider = e.target.value as AIProvider;
                       setProvider(newProvider);
-                      if (apiKey) {
-                        const config: ApiKeyConfig = { provider: newProvider, key: apiKey };
-                        localStorage.setItem('falculator-api-provider', newProvider);
-                        onApiKeyChange(config);
+                      
+                      // Load the key for the new provider
+                      const providerKey = localStorage.getItem(`falculator-api-key-${newProvider}`);
+                      if (providerKey) {
+                        setApiKey(providerKey);
+                        onApiKeyChange({ provider: newProvider, key: providerKey });
+                      } else {
+                        setApiKey('');
+                        onApiKeyChange(undefined);
                       }
                     }}
                     className="text-accent"
@@ -182,10 +207,15 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                     onChange={(e) => {
                       const newProvider = e.target.value as AIProvider;
                       setProvider(newProvider);
-                      if (apiKey) {
-                        const config: ApiKeyConfig = { provider: newProvider, key: apiKey };
-                        localStorage.setItem('falculator-api-provider', newProvider);
-                        onApiKeyChange(config);
+                      
+                      // Load the key for the new provider
+                      const providerKey = localStorage.getItem(`falculator-api-key-${newProvider}`);
+                      if (providerKey) {
+                        setApiKey(providerKey);
+                        onApiKeyChange({ provider: newProvider, key: providerKey });
+                      } else {
+                        setApiKey('');
+                        onApiKeyChange(undefined);
                       }
                     }}
                     className="text-accent"
