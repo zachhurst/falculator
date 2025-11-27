@@ -10,7 +10,7 @@ import { ExamplesModal } from '@/components/ExamplesModal'
 import { PrivacyPolicyModal } from '@/components/PrivacyPolicyModal'
 import { TermsOfServiceModal } from '@/components/TermsOfServiceModal'
 import { parseImage, fileToBase64 } from '@/lib/api'
-import type { AnyPriceData } from '@/lib/api'
+import type { AnyPriceData, ApiKeyConfig } from '@/lib/api'
 
 type AppState = 'idle' | 'loading' | 'success' | 'error'
 
@@ -18,7 +18,7 @@ function App() {
   const [state, setState] = useState<AppState>('idle')
   const [result, setResult] = useState<AnyPriceData | null>(null)
   const [error, setError] = useState<string>('')
-  const [userApiKey, setUserApiKey] = useState('')
+  const [apiKeyConfig, setApiKeyConfig] = useState<ApiKeyConfig | undefined>()
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [isExamplesModalOpen, setIsExamplesModalOpen] = useState(false)
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
@@ -26,7 +26,7 @@ function App() {
   const [clearTrigger, setClearTrigger] = useState(0)
 
   // BYOK solution - always require user key
-  const isUploadDisabled = !userApiKey;
+  const isUploadDisabled = !apiKeyConfig;
 
   const handleImageSelect = useCallback(async (file: File) => {
     setState('loading')
@@ -35,7 +35,7 @@ function App() {
 
     try {
       const base64 = await fileToBase64(file)
-      const response = await parseImage(base64, userApiKey || undefined)
+      const response = await parseImage(base64, apiKeyConfig)
 
       if (response.success && response.data) {
         setResult(response.data)
@@ -48,7 +48,7 @@ function App() {
       setError('An unexpected error occurred')
       setState('error')
     }
-  }, [userApiKey])
+  }, [apiKeyConfig])
 
   const handleClearResults = useCallback(() => {
     setState('idle')
@@ -199,7 +199,7 @@ function App() {
 
         <div className="space-y-4">
               <AdvancedSettings 
-                onApiKeyChange={setUserApiKey}
+                onApiKeyChange={setApiKeyConfig}
                 disabled={state === 'loading'}
                 forceOpen={true}
                 required={true}

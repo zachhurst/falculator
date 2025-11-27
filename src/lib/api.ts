@@ -31,6 +31,13 @@ export function isPriceDataV2(data: AnyPriceData): data is PriceData {
   return 'pricing_unit' in data && 'base_cost' in data;
 }
 
+export type AIProvider = 'gemini' | 'falai';
+
+export interface ApiKeyConfig {
+  provider: AIProvider;
+  key: string;
+}
+
 export interface ApiResponse {
   success: boolean
   data?: AnyPriceData; // Support both v1 and v2 during transition
@@ -42,15 +49,20 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJ
 
 export async function parseImage(
   imageBase64: string,
-  userApiKey?: string
+  apiKeyConfig?: ApiKeyConfig
 ): Promise<ApiResponse> {
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
     };
-    if (userApiKey) {
-      headers['x-gemini-key'] = userApiKey;
+    
+    if (apiKeyConfig) {
+      if (apiKeyConfig.provider === 'gemini') {
+        headers['x-gemini-key'] = apiKeyConfig.key;
+      } else if (apiKeyConfig.provider === 'falai') {
+        headers['x-falai-key'] = apiKeyConfig.key;
+      }
     }
 
     const response = await fetch(`${SUPABASE_URL}/functions/v1/image-parser`, {
@@ -60,7 +72,7 @@ export async function parseImage(
     })
 
     if (response.status === 429) {
-      throw new Error('Rate limit exceeded. Please add your own Gemini API key in Advanced Settings.');
+      throw new Error('Rate limit exceeded. Please add your own API key in Advanced Settings.');
     }
 
     if (!response.ok) {

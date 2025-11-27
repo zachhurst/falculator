@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Settings, Key, Shield, Eye, EyeOff } from 'lucide-react';
 import { SecurityInfoModal } from './SecurityInfoModal';
+import type { ApiKeyConfig, AIProvider } from '@/lib/api';
 
 interface AdvancedSettingsProps {
-  onApiKeyChange: (key: string) => void;
+  onApiKeyChange: (config: ApiKeyConfig | undefined) => void;
   disabled?: boolean;
   forceOpen?: boolean;
   required?: boolean;
@@ -12,16 +13,20 @@ interface AdvancedSettingsProps {
 export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required }: AdvancedSettingsProps) {
   const [isOpen, setIsOpen] = useState(forceOpen || false);
   const [apiKey, setApiKey] = useState('');
+  const [provider, setProvider] = useState<AIProvider>('gemini');
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [isKeyFocused, setIsKeyFocused] = useState(false);
 
   // Load API key from localStorage on mount
   useEffect(() => {
     try {
-      const savedKey = localStorage.getItem('falculator-gemini-key');
+      const savedKey = localStorage.getItem('falculator-api-key');
+      const savedProvider = localStorage.getItem('falculator-api-provider') as AIProvider || 'gemini';
+      
       if (savedKey) {
         setApiKey(savedKey);
-        onApiKeyChange(savedKey);
+        setProvider(savedProvider);
+        onApiKeyChange({ provider: savedProvider, key: savedKey });
       }
     } catch (err) {
       console.warn('Could not load saved API key:', err);
@@ -41,9 +46,11 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
     // Save to localStorage for persistence
     try {
       if (value) {
-        localStorage.setItem('falculator-gemini-key', value);
+        localStorage.setItem('falculator-api-key', value);
+        localStorage.setItem('falculator-api-provider', provider);
       } else {
-        localStorage.removeItem('falculator-gemini-key');
+        localStorage.removeItem('falculator-api-key');
+        localStorage.removeItem('falculator-api-provider');
       }
     } catch (err) {
       console.warn('Could not save API key to localStorage:', err);
@@ -52,23 +59,34 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
     // Validate API key format to detect accidental password paste
     if (value && value.length > 10) {
       // Gemini API keys start with "AIza" and are ~39 characters
-      // Common passwords don't start with "AIza"
-      if (!value.startsWith('AIza')) {
-        console.warn('Warning: This does not appear to be a valid Gemini API key format');
+      const isGeminiKey = value.startsWith('AIza') && value.length >= 35;
+      // Fal.ai keys typically start with "fal-" or are longer alphanumeric strings
+      const isFalaiKey = value.startsWith('fal-') || (value.length >= 20 && /^[a-f0-9-]+$/i.test(value));
+      const isLikelyPassword = !isGeminiKey && !isFalaiKey && (value.includes(' ') || value.length < 20);
+      
+      if (isLikelyPassword) {
+        // Clear if it looks like a password was accidentally pasted
+        setApiKey('');
+        localStorage.removeItem('falculator-api-key');
+        localStorage.removeItem('falculator-api-provider');
+        onApiKeyChange(undefined);
+        return;
       }
     }
     
-    onApiKeyChange(value);
+    const config: ApiKeyConfig | undefined = value ? { provider, key: value } : undefined;
+    onApiKeyChange(config);
   };
 
   const clearSavedKey = () => {
     setApiKey('');
     try {
-      localStorage.removeItem('falculator-gemini-key');
+      localStorage.removeItem('falculator-api-key');
+      localStorage.removeItem('falculator-api-provider');
     } catch (err) {
       console.warn('Could not clear saved API key:', err);
     }
-    onApiKeyChange('');
+    onApiKeyChange(undefined);
   };
 
   // Mask the API key for display
@@ -113,7 +131,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
               <div className="flex items-center gap-2">
                 <Key className="w-4 h-4 text-accent" />
                 <label className="text-small uppercase-mds font-medium text-gray-700">
-                  Gemini API Key {required && <span className="text-gray-700">*</span>}
+                  API Key {required && <span className="text-gray-700">*</span>}
                 </label>
               </div>
               <button
@@ -125,10 +143,58 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                 Is my key secure?
               </button>
             </div>
+            
+            {/* Provider Selector */}
+            <div className="flex items-center gap-4">
+              <label className="text-small text-gray-700">Provider:</label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="provider"
+                    value="gemini"
+                    checked={provider === 'gemini'}
+                    onChange={(e) => {
+                      const newProvider = e.target.value as AIProvider;
+                      setProvider(newProvider);
+                      if (apiKey) {
+                        const config: ApiKeyConfig = { provider: newProvider, key: apiKey };
+                        localStorage.setItem('falculator-api-provider', newProvider);
+                        onApiKeyChange(config);
+                      }
+                    }}
+                    className="text-accent"
+                    disabled={disabled}
+                  />
+                  <span className="text-small text-gray-700">Google Gemini</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="provider"
+                    value="falai"
+                    checked={provider === 'falai'}
+                    onChange={(e) => {
+                      const newProvider = e.target.value as AIProvider;
+                      setProvider(newProvider);
+                      if (apiKey) {
+                        const config: ApiKeyConfig = { provider: newProvider, key: apiKey };
+                        localStorage.setItem('falculator-api-provider', newProvider);
+                        onApiKeyChange(config);
+                      }
+                    }}
+                    className="text-accent"
+                    disabled={disabled}
+                  />
+                  <span className="text-small text-gray-700">Fal.ai</span>
+                </label>
+              </div>
+            </div>
+            
             <p className="text-small text-gray-700">
               {required 
-                ? "A Gemini Flash 2.0 API key is required to use this service. Your key is only used for this session and is never stored."
-                : "Bring your own Gemini Flash 2.0 key (BYOK) to bypass shared rate limits and stay on your own quota. Your key is only used for this session and is never stored."
+                ? `An API key is required to use this service. Your key is only used for this session and is never stored.`
+                : `Bring your own API key (BYOK) to bypass shared rate limits and stay on your own quota. Your key is only used for this session and is never stored.`
               }
             </p>
             <div className="relative">
