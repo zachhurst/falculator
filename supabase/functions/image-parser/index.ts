@@ -4,7 +4,7 @@ import { GoogleGenerativeAI, SchemaType } from "npm:@google/generative-ai@^0.21.
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-gemini-key",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-gemini-key, x-falai-key",
 };
 
 const FalPricingSchema = {
@@ -56,6 +56,114 @@ const LegacyPriceSchema = {
   required: ["cost_per_image", "runs_per_dollar"],
 };
 
+// Fal.ai handler using their any-llm endpoint with Gemini model
+async function handleFalaiRequest(
+  imageBase64: string, 
+  apiKey: string, 
+  corsHeaders: Record<string, string>
+): Promise<Response> {
+  console.log("Processing request with Fal.ai provider");
+  
+  try {
+    // Fal.ai any-llm endpoint with Gemini Flash 2.0
+    // Note: This endpoint may have limited vision support compared to direct Gemini API
+    const falResponse = await fetch("https://fal.run/fal-ai/any-llm", {
+      method: "POST",
+      headers: {
+        "Authorization": `Key ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.0-flash-001",
+        prompt: `You are an expert data extraction agent. Analyze the provided image (base64 encoded) from a fal.ai model page and extract pricing information.
+
+The image is base64 encoded: ${imageBase64.substring(0, 100)}... (truncated for prompt)
+
+Your Task:
+1. Identify the pricing_unit: PER_MEGAPIXEL, PER_IMAGE, PER_SECOND_VIDEO, PER_VIDEO, PER_SECOND_GPU, FREE, or UNKNOWN
+2. Extract the base_cost as a number
+3. Find gpu_type if applicable (only for PER_SECOND_GPU)
+4. List all resolutions if visible
+
+Return ONLY valid JSON in this exact format:
+{
+  "pricing_unit": "PER_MEGAPIXEL",
+  "base_cost": 0.005,
+  "gpu_type": null,
+  "resolutions": [{"name": "1080p", "width": 1920, "height": 1080}],
+  "schema_version": "v2"
+}`,
+        system_prompt: "You are a JSON extraction expert. Always respond with valid JSON only, no markdown or explanation.",
+      }),
+    });
+
+    if (!falResponse.ok) {
+      const errorText = await falResponse.text();
+      console.error("Fal.ai API error:", falResponse.status, errorText);
+      
+      // Check if it's an auth error
+      if (falResponse.status === 401 || falResponse.status === 403) {
+        return new Response(
+          JSON.stringify({ error: "Invalid Fal.ai API key. Please check your key and try again." }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      // Note: Fal.ai's any-llm endpoint may not support image inputs
+      // If this fails, user may need to use Gemini directly
+      return new Response(
+        JSON.stringify({ 
+          error: "Fal.ai any-llm endpoint does not support image analysis. Please use Google Gemini provider instead, or check if your fal.ai plan includes vision models." 
+        }),
+        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const falData = await falResponse.json();
+    console.log("Fal.ai response:", JSON.stringify(falData).substring(0, 200));
+    
+    // Extract the text response from Fal.ai
+    const responseText = falData.output || falData.text || falData.response || "";
+    
+    // Try to parse the JSON from the response
+    let priceData;
+    try {
+      // Try to find JSON in the response
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        priceData = JSON.parse(jsonMatch[0]);
+      } else {
+        priceData = JSON.parse(responseText);
+      }
+    } catch (parseError) {
+      console.error("Failed to parse Fal.ai response as JSON:", responseText);
+      return new Response(
+        JSON.stringify({ 
+          error: "Could not extract pricing information. The Fal.ai any-llm endpoint may not support image analysis. Try using Google Gemini provider instead." 
+        }),
+        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Ensure schema version is set
+    priceData.schema_version = "v2";
+    
+    return new Response(
+      JSON.stringify(priceData),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+    
+  } catch (error) {
+    console.error("Fal.ai request failed:", error);
+    return new Response(
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : "Fal.ai request failed. Please try Google Gemini provider." 
+      }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+}
+
 Deno.serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -79,21 +187,33 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Extract user API key for BYOK support
-    const userApiKey = req.headers.get("x-gemini-key");
+    // Extract user API keys for BYOK support
+    const geminiApiKey = req.headers.get("x-gemini-key");
+    const falaiApiKey = req.headers.get("x-falai-key");
+    
+    // Determine which provider to use
+    const provider = falaiApiKey ? "falai" : "gemini";
+    const userApiKey = falaiApiKey || geminiApiKey;
     const apiKey = userApiKey || Deno.env.get("GEMINI_API_KEY");
     
     if (!apiKey) {
-      console.error("GEMINI_API_KEY not configured and no user key provided");
+      console.error("No API key configured and no user key provided");
       return new Response(
         JSON.stringify({ 
-          error: "No API key available. Please add your own Gemini API key in Advanced Settings to continue." 
+          error: "No API key available. Please add your own API key in Advanced Settings to continue." 
         }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Add missing genAI initialization with correct API key
+    console.log(`Using provider: ${provider}, user key provided: ${!!userApiKey}`);
+
+    // Handle Fal.ai provider
+    if (provider === "falai") {
+      return await handleFalaiRequest(image, apiKey, corsHeaders);
+    }
+
+    // Default to Gemini provider
     const genAI = new GoogleGenerativeAI(apiKey);
     
     // Rate limiting for default key usage (required per PRD)
