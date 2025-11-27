@@ -55,7 +55,7 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
         <div className="p-4 space-y-4">
           {/* Main paragraph */}
           <p className="text-body text-gray-700 leading-relaxed">
-            When you bring your own Gemini API key, it flows directly from your browser to Google's servers — never touching our infrastructure. Your key is transmitted via a secure HTTPS connection and our backend simply forwards it to Google's API without storing or logging it.
+            When you bring your own API key (Google Gemini or Fal.ai), it flows directly from your browser to your chosen provider — never touching our infrastructure. Your key is transmitted via a secure HTTPS connection and our backend simply forwards it to the selected API without storing or logging it.
           </p>
 
           {/* Security Features */}
@@ -67,7 +67,7 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
               <div>
                 <h3 className="text-small font-medium uppercase-mds text-black">End-to-End Encryption</h3>
                 <p className="text-small text-gray-700 mt-1">
-                  Your API key is transmitted via HTTPS in the <code className="bg-gray-100 px-1">x-gemini-key</code> header, encrypted in transit.
+                  Your API key is transmitted via HTTPS in the appropriate header (<code className="bg-gray-100 px-1">x-gemini-key</code> or <code className="bg-gray-100 px-1">x-falai-key</code>), encrypted in transit.
                 </p>
               </div>
             </div>
