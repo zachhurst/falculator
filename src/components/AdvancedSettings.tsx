@@ -256,12 +256,12 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
               <p className="text-small text-gray-700">
                 <strong>Need an API key?</strong> Get one from{' '}
                 <a 
-                  href="https://makersuite.google.com/app/apikey" 
+                  href={provider === 'falai' ? 'https://fal.ai/dashboard/keys' : 'https://makersuite.google.com/app/apikey'}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-accent hover:underline"
                 >
-                  Google AI Studio
+                  {provider === 'falai' ? 'Fal.ai Dashboard' : 'Google AI Studio'}
                 </a>
               </p>
             </div>

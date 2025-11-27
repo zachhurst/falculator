@@ -14,9 +14,10 @@ A simple utility that extracts pricing information from fal.ai screenshots using
 - **Real-time Processing** - Get results in seconds with visual loading states
 
 ### User Experience
-- **BYOK Architecture** - Bring Your Own Key design keeps your data private
+- **Dual BYOK Architecture** - Choose between Google Gemini or Fal.ai API keys
 - **No Data Collection** - We don't store your images, API keys, or usage data
-- **API Key Masking** - Your Gemini key is masked by default with reveal toggle
+- **API Key Masking** - Your API key is masked by default with reveal toggle
+- **Provider Selection** - Switch between Gemini and Fal.ai with one click
 - **Examples Gallery** - See sample inputs and results before trying
 - **Responsive Design** - Works perfectly on desktop and mobile devices
 
@@ -30,7 +31,7 @@ A simple utility that extracts pricing information from fal.ai screenshots using
 
 - **Frontend**: React 18 + Vite + TypeScript + Tailwind CSS v4
 - **Backend**: Supabase Edge Functions (Deno runtime)
-- **AI**: Google Gemini 1.5 Flash API
+- **AI**: Google Gemini 1.5 Flash API + Fal.ai OpenRouter Vision
 - **Hosting**: Netlify (frontend) + Supabase (functions)
 - **Icons**: Lucide React
 - **Package Manager**: pnpm
@@ -40,7 +41,7 @@ A simple utility that extracts pricing information from fal.ai screenshots using
 ### Prerequisites
 - Node.js 18+ 
 - pnpm package manager
-- Google Gemini API key
+- Google Gemini API key OR Fal.ai API key
 - Supabase account (free tier works)
 
 ### 1. Clone and Install
@@ -82,10 +83,11 @@ Visit `http://localhost:5173` and start using Fal-culator!
 
 ## How It Works
 
-1. **Upload Screenshot** - Drag & drop or select any fal.ai pricing image
-2. **AI Processing** - Image is sent to Gemini via Supabase Edge Function
-3. **Structured Output** - Get clean pricing breakdowns for all models/resolutions
-4. **Cost Calculations** - See cost per image, runs per $10, and total estimates
+1. **Choose Provider** - Select Google Gemini or Fal.ai as your AI provider
+2. **Upload Screenshot** - Drag & drop or select any fal.ai pricing image
+3. **AI Processing** - Image is sent to your chosen provider via Supabase Edge Function
+4. **Structured Output** - Get clean pricing breakdowns for all models/resolutions
+5. **Cost Calculations** - See cost per image, runs per $10, and total estimates
 
 ### Supported Pricing Models
 - **Per Megapixel** - Image generation with resolution-based scaling
@@ -97,10 +99,16 @@ Visit `http://localhost:5173` and start using Fal-culator!
 ## Architecture
 
 ### BYOK (Bring Your Own Key) Design
-- Users provide their own Gemini API key
+- Users provide their own Gemini or Fal.ai API key
 - Keys never touch our servers
-- Direct browser → Google API communication
+- Direct browser → Provider API communication
 - Users stay on their own pricing quotas
+
+### Multi-Provider Architecture
+- **Google Gemini**: Direct API integration with Gemini 2.0 Flash
+- **Fal.ai**: OpenRouter Vision endpoint with Gemini 2.5 Flash
+- Provider auto-detection and seamless switching
+- Consistent output format regardless of provider
 
 ### Privacy-First Approach
 - No cookies or tracking
@@ -145,6 +153,7 @@ MIT License - feel free to use this code for your own projects.
 - **@atwilkinson_** - For calling out confusing fal.ai pricing
 - **@GiusMarci** - For agreeing that per-second image pricing is weird
 - **Google** - For the Gemini 1.5 Flash API
+- **Fal.ai** - For OpenRouter Vision and Gemini 2.5 Flash access
 - **Supabase** - For excellent Edge Functions
 - **fal.ai** - For the complex pricing that inspired this tool
 

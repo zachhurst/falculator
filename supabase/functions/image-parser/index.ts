@@ -74,7 +74,7 @@ async function handleFalaiRequest(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-preview-05-20",
+        model: "google/gemini-2.5-flash",
         prompt: `You are an expert data extraction agent. Analyze this screenshot from a fal.ai model page and extract pricing information.
 
 Your Task:
