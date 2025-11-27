@@ -74,13 +74,13 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
           </section>
 
           <section className="space-y-2">
-            <h3 className="text-body font-medium">Your Gemini API Key</h3>
+            <h3 className="text-body font-medium">Your API Keys</h3>
             <p className="text-small text-gray-700 leading-relaxed">
-              When you enter your Gemini API key, it is:
+              When you enter your API key (Google Gemini or Fal.ai), it is:
             </p>
             <ul className="text-small text-gray-700 space-y-1 list-disc list-inside">
               <li>Stored only in your browser's localStorage (on your device)</li>
-              <li>Transmitted directly to Google's servers via HTTPS</li>
+              <li>Transmitted directly to your chosen provider via HTTPS</li>
               <li>Never stored on our servers or in any database</li>
               <li>Never logged or recorded</li>
             </ul>
@@ -97,7 +97,7 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
             <ul className="text-small text-gray-700 space-y-1 list-disc list-inside">
               <li>The image is converted to base64 in your browser</li>
               <li>It's sent to our Supabase Edge Function for processing</li>
-              <li>The Edge Function forwards it to Google's Gemini API</li>
+              <li>The Edge Function forwards it to your chosen AI provider (Gemini or Fal.ai)</li>
               <li>Results are returned to your browser</li>
               <li>No images are stored at any point</li>
             </ul>
@@ -110,11 +110,12 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
             </p>
             <ul className="text-small text-gray-700 space-y-1 list-disc list-inside">
               <li><strong>Supabase</strong> — Hosts our Edge Function (serverless processing)</li>
-              <li><strong>Google Gemini</strong> — Processes images via your API key</li>
+              <li><strong>Google Gemini</strong> — Processes images via your API key (when selected)</li>
+              <li><strong>Fal.ai</strong> — Processes images via OpenRouter Vision (when selected)</li>
               <li><strong>Netlify</strong> — Hosts the website</li>
             </ul>
             <p className="text-small text-gray-700 leading-relaxed">
-              Each service has their own privacy policy. Your use of your Gemini API key is governed by Google's terms.
+              Each service has their own privacy policy. Your use of API keys is governed by your chosen provider's terms.
             </p>
           </section>
 

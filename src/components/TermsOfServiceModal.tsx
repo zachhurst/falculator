@@ -66,14 +66,14 @@ export function TermsOfServiceModal({ isOpen, onClose }: TermsOfServiceModalProp
             <h3 className="text-body font-medium">What This Tool Does</h3>
             <p className="text-small text-gray-700 leading-relaxed">
               Fal-culator parses screenshots of fal.ai pricing pages and extracts cost information. 
-              It uses Google's Gemini AI to analyze images and return structured pricing data.
+              It uses your chosen AI provider (Google Gemini or Fal.ai) to analyze images and return structured pricing data.
             </p>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-body font-medium">Your Responsibilities</h3>
             <ul className="text-small text-gray-700 space-y-1 list-disc list-inside">
-              <li>You must provide your own Gemini API key (BYOK)</li>
+              <li>You must provide your own API key (BYOK) - Gemini or Fal.ai</li>
               <li>You are responsible for your API usage and any associated costs</li>
               <li>You agree to use this tool for lawful purposes only</li>
               <li>You won't attempt to abuse, overload, or exploit the service</li>
@@ -105,7 +105,7 @@ export function TermsOfServiceModal({ isOpen, onClose }: TermsOfServiceModalProp
             <ul className="text-small text-gray-700 space-y-1 list-disc list-inside">
               <li>Use or inability to use this tool</li>
               <li>Inaccurate pricing information</li>
-              <li>API costs incurred through your Gemini key</li>
+              <li>API costs incurred through your chosen provider</li>
               <li>Any decisions made based on this tool's output</li>
             </ul>
           </section>
