@@ -1,12 +1,16 @@
 # Fal-culator
 
-A simple web application that extracts pricing information from fal.ai screenshots using Google's Gemini VLM.
+A modern web application that extracts pricing information from fal.ai screenshots using Google's Gemini VLM. Features a redesigned UI with advanced settings and lightbox functionality.
 
 ## Features
 
 - **Drag & drop image upload** - Support for PNG, JPG, JPEG, WebP
 - **AI-powered extraction** - Uses Gemini 1.5 Pro with structured output
 - **Clean pricing breakdown** - Shows cost per image and runs per dollar
+- **Advanced settings panel** - Configure custom parameters and preferences
+- **Lightbox functionality** - Full-screen image viewing with zoom controls
+- **Modern responsive design** - Built with Tailwind CSS and shadcn/ui components
+- **Enhanced user experience** - Improved loading states and error handling
 
 ## Tech Stack
 
