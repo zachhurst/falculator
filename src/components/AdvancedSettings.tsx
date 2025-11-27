@@ -112,7 +112,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                   type={showKey ? "text" : "password"}
                   value={apiKey}
                   onChange={(e) => handleKeyChange(e.target.value)}
-                  placeholder="AIza..."
+                  placeholder="Enter API Key Here..."
                   name="gemini-api-token-field"
                   id="gemini-api-token-field"
                   autoComplete="off"
