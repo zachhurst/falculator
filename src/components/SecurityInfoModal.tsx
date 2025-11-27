@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { X, Shield, Lock, Server, Eye } from 'lucide-react'
+import { Shield, Lock, Server, Eye } from 'lucide-react'
 
 interface SecurityInfoModalProps {
   isOpen: boolean
@@ -7,19 +7,7 @@ interface SecurityInfoModalProps {
 }
 
 export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return
-      if (e.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
-
+  
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -37,24 +25,14 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
   return (
     <div 
       className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
     >
       <div className="bg-white max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-300">
+        <div className="flex items-center p-4 border-b border-gray-300">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-accent" />
             <h2 className="text-h4 uppercase-mds letter-spacing-tight">API Key Security</h2>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 hover:bg-gray-100 transition-colors"
-            aria-label="Close modal"
-          >
-            <X className="w-5 h-5 text-black" />
-          </button>
         </div>
 
         {/* Content */}
