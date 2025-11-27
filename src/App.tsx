@@ -18,6 +18,7 @@ function App() {
   const [userApiKey, setUserApiKey] = useState('')
   const [serverKeyAvailable, setServerKeyAvailable] = useState<boolean | null>(null)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const [clearTrigger, setClearTrigger] = useState(0)
 
   // Check if server key is available on mount
   useEffect(() => {
@@ -81,8 +82,8 @@ function App() {
     setState('idle')
     setError('')
     setResult(null)
-    // Also clear the uploaded image
-    setUploadedFile(null)
+    // Trigger image clear in ImageUploader via increment
+    setClearTrigger(prev => prev + 1)
   }, [])
 
   const handleRetry = useCallback(() => {
@@ -234,6 +235,7 @@ function App() {
               <ImageUploader 
                 onImageSelect={handleImageSelect}
                 onImageClear={handleClearResults}
+                clearTrigger={clearTrigger}
                 disabled={state === 'loading' || isUploadDisabled}
               />
 

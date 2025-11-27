@@ -79,10 +79,11 @@ export function ResultsDisplay({ data, onClear }: ResultsDisplayProps) {
       }
     } else if (['PER_SECOND_VIDEO', 'PER_VIDEO', 'UNKNOWN'].includes(pricing_unit)) {
       result += `\nCost Structure\tPer ${pricing_unit.replace(/_/g, ' ').toLowerCase()}\nBase Rate\t${base_cost.toFixed(4)}`;
-      // Add resolution table for video pricing if available
-      if (resolutions && resolutions.length > 0) {
+      // Add resolution table for video pricing if valid resolutions available
+      const validResolutions = resolutions?.filter((res) => res.width > 0 && res.height > 0) || [];
+      if (validResolutions.length > 0) {
         result += `\n\nResolution\tDimensions\tAspect Ratio\n`;
-        resolutions.forEach((res) => {
+        validResolutions.forEach((res) => {
           // Calculate aspect ratio for video models
           const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
           const divisor = gcd(res.width, res.height);
@@ -331,52 +332,59 @@ export function ResultsDisplay({ data, onClear }: ResultsDisplayProps) {
             </>
           )}
 
-          {(['PER_SECOND_VIDEO', 'PER_VIDEO', 'UNKNOWN'].includes(pricing_unit)) && (
-            <>
-              <div className="text-center py-md bg-gray-50">
-                <p className="text-lg text-black">Base cost: ${base_cost.toFixed(4)} per {pricing_unit.replace(/_/g, ' ').toLowerCase()}</p>
-              </div>
-              
-              {/* Resolution Table for video pricing when resolutions available */}
-              {resolutions && resolutions.length > 0 && (
-                <div className="mt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Table className="w-5 h-5 text-accent" />
-                    <h3 className="text-h4 uppercase-mds letter-spacing-tight">Available Resolutions</h3>
-                  </div>
-                  <div className="overflow-x-auto -mx-2 px-2">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="border-b bg-gray-50">
-                          <th className="text-left p-sm text-small uppercase-mds font-medium text-gray-700">Resolution</th>
-                          <th className="text-right p-sm text-small uppercase-mds font-medium text-gray-700">Dimensions</th>
-                          <th className="text-right p-sm text-small uppercase-mds font-medium text-gray-700">Aspect Ratio</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {resolutions.map((res, idx) => {
-                          // Calculate aspect ratio for video models instead of megapixels
-                          const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-                          const divisor = gcd(res.width, res.height);
-                          const aspectWidth = res.width / divisor;
-                          const aspectHeight = res.height / divisor;
-                          const aspectRatio = `${aspectWidth}:${aspectHeight}`;
-                          
-                          return (
-                            <tr key={idx} className="border-b hover:bg-gray-50">
-                              <td className="p-sm font-medium text-black">{res.name}</td>
-                              <td className="text-right p-sm text-gray-700">{res.width}×{res.height}</td>
-                              <td className="text-right p-sm text-gray-700">{aspectRatio}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+          {(['PER_SECOND_VIDEO', 'PER_VIDEO', 'UNKNOWN'].includes(pricing_unit)) && (() => {
+            // Filter out invalid resolutions (0×0 or missing dimensions)
+            const validResolutions = resolutions?.filter(
+              (res) => res.width > 0 && res.height > 0
+            ) || [];
+            
+            return (
+              <>
+                <div className="text-center py-md bg-gray-50">
+                  <p className="text-lg text-black">Base cost: ${base_cost.toFixed(4)} per {pricing_unit.replace(/_/g, ' ').toLowerCase()}</p>
                 </div>
-              )}
-            </>
-          )}
+                
+                {/* Resolution Table for video pricing when valid resolutions available */}
+                {validResolutions.length > 0 && (
+                  <div className="mt-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Table className="w-5 h-5 text-accent" />
+                      <h3 className="text-h4 uppercase-mds letter-spacing-tight">Available Resolutions</h3>
+                    </div>
+                    <div className="overflow-x-auto -mx-2 px-2">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="border-b bg-gray-50">
+                            <th className="text-left p-sm text-small uppercase-mds font-medium text-gray-700">Resolution</th>
+                            <th className="text-right p-sm text-small uppercase-mds font-medium text-gray-700">Dimensions</th>
+                            <th className="text-right p-sm text-small uppercase-mds font-medium text-gray-700">Aspect Ratio</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {validResolutions.map((res, idx) => {
+                            // Calculate aspect ratio for video models
+                            const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+                            const divisor = gcd(res.width, res.height);
+                            const aspectWidth = res.width / divisor;
+                            const aspectHeight = res.height / divisor;
+                            const aspectRatio = `${aspectWidth}:${aspectHeight}`;
+                            
+                            return (
+                              <tr key={idx} className="border-b hover:bg-gray-50">
+                                <td className="p-sm font-medium text-black">{res.name}</td>
+                                <td className="text-right p-sm text-gray-700">{res.width}×{res.height}</td>
+                                <td className="text-right p-sm text-gray-700">{aspectRatio}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
       </div>
     </div>
