@@ -58,11 +58,17 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
     
     // Validate API key format to detect accidental password paste
     if (value && value.length > 10) {
-      // Gemini API keys start with "AIza" and are ~39 characters
-      const isGeminiKey = value.startsWith('AIza') && value.length >= 35;
-      // Fal.ai keys typically start with "fal-" or are longer alphanumeric strings
-      const isFalaiKey = value.startsWith('fal-') || (value.length >= 20 && /^[a-f0-9-]+$/i.test(value));
-      const isLikelyPassword = !isGeminiKey && !isFalaiKey && (value.includes(' ') || value.length < 20);
+      let isValidKey = false;
+      
+      if (provider === 'gemini') {
+        // Gemini API keys start with "AIza" and are ~39 characters
+        isValidKey = value.startsWith('AIza') && value.length >= 35;
+      } else if (provider === 'falai') {
+        // Fal.ai keys can be various formats - just check basic requirements
+        isValidKey = value.length >= 10 && !value.includes(' ');
+      }
+      
+      const isLikelyPassword = !isValidKey && (value.includes(' ') || value.length < 20);
       
       if (isLikelyPassword) {
         // Clear if it looks like a password was accidentally pasted
