@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Image, ChevronLeft, ChevronRight, Monitor, Video } from 'lucide-react'
+import { LoadingSpinner } from './LoadingSpinner'
 
 interface ExamplesModalProps {
   isOpen: boolean
@@ -58,12 +59,37 @@ const EXAMPLES: Example[] = [
         ['2160p', '3840×2160', '16:9'],
       ]
     }
+  },
+  {
+    id: 'image',
+    title: 'Per Image Pricing',
+    icon: Monitor,
+    inputImage: 'https://micxjfgioqawfvwsxqfe.supabase.co/storage/v1/object/public/images/per%20image%20cost%20test.png',
+    pricingModel: 'PER IMAGE',
+    baseCost: '$0.04',
+    description: 'Some models charge a flat rate per image regardless of resolution.',
+    results: {
+      headers: ['Cost Structure', 'Cost per Image'],
+      rows: [
+        ['Flat rate per image', '$0.04'],
+      ]
+    }
   }
 ]
 
 export function ExamplesModal({ isOpen, onClose }: ExamplesModalProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [imageLoading, setImageLoading] = useState<{ [key: string]: boolean }>({})
+  const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({})
   const example = EXAMPLES[currentIndex]
+
+  // Initialize loading state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setImageLoading({ [example.id]: true })
+      setImageErrors({})
+    }
+  }, [isOpen, example.id])
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -77,12 +103,40 @@ export function ExamplesModal({ isOpen, onClose }: ExamplesModalProps) {
     }
   }, [isOpen])
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
   const nextExample = () => {
-    setCurrentIndex((prev) => (prev + 1) % EXAMPLES.length)
+    const newIndex = (currentIndex + 1) % EXAMPLES.length
+    setCurrentIndex(newIndex)
+    // Start loading state for new image
+    setImageLoading(prev => ({ ...prev, [EXAMPLES[newIndex].id]: true }))
   }
 
   const prevExample = () => {
-    setCurrentIndex((prev) => (prev - 1 + EXAMPLES.length) % EXAMPLES.length)
+    const newIndex = (currentIndex - 1 + EXAMPLES.length) % EXAMPLES.length
+    setCurrentIndex(newIndex)
+    // Start loading state for new image
+    setImageLoading(prev => ({ ...prev, [EXAMPLES[newIndex].id]: true }))
+  }
+
+  const handleImageLoad = (exampleId: string) => {
+    setImageLoading(prev => ({ ...prev, [exampleId]: false }))
+  }
+
+  const handleImageError = (exampleId: string) => {
+    setImageLoading(prev => ({ ...prev, [exampleId]: false }))
+    setImageErrors(prev => ({ ...prev, [exampleId]: true }))
   }
 
   if (!isOpen) return null
@@ -123,12 +177,42 @@ export function ExamplesModal({ isOpen, onClose }: ExamplesModalProps) {
             {/* Input Screenshot at top */}
             <div className="p-4 border-b border-gray-300">
               <h4 className="text-small uppercase-mds font-medium text-gray-700 mb-2">Input Screenshot</h4>
-              <div className="bg-gray-50 p-4 flex justify-center">
-                <img 
-                  src={example.inputImage} 
-                  alt={`${example.title} input`}
-                  className="max-w-full h-auto max-h-96 object-contain"
-                />
+              <div className="bg-gray-50 p-4 flex justify-center relative min-h-[200px]">
+                {/* Show spinner while loading */}
+                {imageLoading[example.id] && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                    <LoadingSpinner />
+                  </div>
+                )}
+                {/* Show error message if image failed to load */}
+                {imageErrors[example.id] && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                    <div className="text-center">
+                      <p className="text-small text-gray-700 mb-2">Failed to load image</p>
+                      <button
+                        onClick={() => {
+                          setImageErrors(prev => ({ ...prev, [example.id]: false }))
+                          setImageLoading(prev => ({ ...prev, [example.id]: true }))
+                        }}
+                        className="text-small text-accent hover:underline"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {/* Show image when loaded */}
+                {!imageErrors[example.id] && (
+                  <img 
+                    src={example.inputImage} 
+                    alt={`${example.title} input`}
+                    className={`max-w-full h-auto max-h-96 object-contain transition-opacity duration-200 ${
+                      imageLoading[example.id] ? 'opacity-0' : 'opacity-100'
+                    }`}
+                    onLoad={() => handleImageLoad(example.id)}
+                    onError={() => handleImageError(example.id)}
+                  />
+                )}
               </div>
             </div>
 
@@ -201,7 +285,7 @@ export function ExamplesModal({ isOpen, onClose }: ExamplesModalProps) {
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={`w-2 h-2 transition-colors ${
-                  index === currentIndex ? 'bg-accent' : 'bg-gray-300 hover:bg-gray-400'
+                  index === currentIndex ? 'bg-black' : 'bg-gray-300 hover:bg-gray-400'
                 }`}
               />
             ))}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Key, Shield } from 'lucide-react';
+import { Settings, Key, Shield, Eye, EyeOff } from 'lucide-react';
 import { SecurityInfoModal } from './SecurityInfoModal';
 
 interface AdvancedSettingsProps {
@@ -13,6 +13,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
   const [isOpen, setIsOpen] = useState(forceOpen || false);
   const [apiKey, setApiKey] = useState('');
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+  const [isKeyFocused, setIsKeyFocused] = useState(false);
 
   // Load API key from localStorage on mount
   useEffect(() => {
@@ -70,6 +71,19 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
     onApiKeyChange('');
   };
 
+  // Mask the API key for display
+  const getDisplayValue = () => {
+    if (!apiKey) return '';
+    if (isKeyFocused) return apiKey; // Show real key when revealed
+    // Mask with asterisks, show first 4 chars for identification
+    if (apiKey.length <= 4) return '*'.repeat(apiKey.length);
+    return apiKey.substring(0, 4) + '*'.repeat(apiKey.length - 4);
+  };
+
+  const toggleKeyVisibility = () => {
+    setIsKeyFocused(!isKeyFocused);
+  };
+
   const toggleOpen = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
@@ -119,24 +133,35 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
             </p>
             <div className="relative">
               {(required || isOpen) && (
-                <input
-                  type="text"
-                  value={apiKey}
-                  onChange={(e) => handleKeyChange(e.target.value)}
-                  placeholder="Enter API Key Here..."
-                  name="gemini-api-token-field"
-                  id="gemini-api-token-field"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck="false"
-                  data-lpignore="true"
-                  data-form-type="other"
-                  data-1p-ignore="true"
-                  data-bwignore="true"
-                  className="w-full p-2 border border-gray-500 text-small bg-white focus:outline-none focus:border-accent focus:border-2"
-                  disabled={disabled}
-                />
+                <>
+                  <input
+                    type="text"
+                    value={getDisplayValue()}
+                    onChange={(e) => handleKeyChange(e.target.value)}
+                    placeholder="Enter API Key Here..."
+                    name="gemini-api-token-field"
+                    id="gemini-api-token-field"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    data-lpignore="true"
+                    data-form-type="other"
+                    data-1p-ignore="true"
+                    data-bwignore="true"
+                    className="w-full p-2 pr-10 border border-gray-500 text-small bg-white focus:outline-none focus:border-accent focus:border-2 font-mono"
+                    disabled={disabled}
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleKeyVisibility}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700 hover:text-black transition-colors"
+                    disabled={disabled}
+                    title={isKeyFocused ? "Hide API key" : "Show API key"}
+                  >
+                    {isKeyFocused ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </>
               )}
             </div>
             {apiKey && (

@@ -20,11 +20,27 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
     }
   }, [isOpen])
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   return (
     <div 
       className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
     >
       <div className="bg-white max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
