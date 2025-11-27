@@ -56,7 +56,7 @@ Deno.serve(async (req: Request) => {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-pro",
+      model: "gemini-2.0-flash",
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: PriceSchema,
@@ -110,6 +110,8 @@ Format your response according to the provided schema.`;
     console.error("Error processing request:", error);
     
     const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : "";
+    console.error("Error details:", { message, stack });
     
     // Check if it's a JSON parsing error (VLM couldn't extract data)
     if (message.includes("JSON") || message.includes("parse")) {
@@ -122,7 +124,7 @@ Format your response according to the provided schema.`;
     }
 
     return new Response(
-      JSON.stringify({ error: "Failed to process image" }),
+      JSON.stringify({ error: message }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
