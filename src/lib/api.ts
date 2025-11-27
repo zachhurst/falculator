@@ -37,7 +37,7 @@ export interface ApiResponse {
   error?: string
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://micxjfgioqawfvwsxqfe.supabase.co'
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export async function parseImage(

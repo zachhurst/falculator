@@ -58,17 +58,19 @@ export function ImageUploader({ onImageSelect, onImageClear, clearTrigger, disab
     if (file) handleFile(file)
   }, [handleFile, disabled])
 
-  const clearPreview = useCallback(() => {
+  const clearPreview = useCallback((emitEvent = true) => {
     setPreview(null)
-    // Also clear results when image is cleared
-    onImageClear?.()
+    // Only notify parent if this wasn't triggered by the parent
+    if (emitEvent) {
+      onImageClear?.()
+    }
   }, [onImageClear])
 
   // Clear preview when clearTrigger changes
   useEffect(() => {
     if (clearTrigger !== undefined && clearTrigger > 0) {
       console.log('Clear trigger detected, clearing preview')
-      clearPreview()
+      clearPreview(false) // Don't emit event back
     }
   }, [clearTrigger, clearPreview])
 
@@ -83,7 +85,7 @@ export function ImageUploader({ onImageSelect, onImageClear, clearTrigger, disab
           />
           {!disabled && (
             <button
-              onClick={clearPreview}
+              onClick={() => clearPreview(true)}
               className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white transition-colors"
               aria-label="Remove image"
             >
