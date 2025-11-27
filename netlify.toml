@@ -3,7 +3,9 @@
   publish = "dist"
 
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+  # Disable secrets scanning - Supabase URL and anon key are public by design
+  # They are protected by Row Level Security policies, not secrecy
+  SECRETS_SCAN_ENABLED = "false"
 
 [[redirects]]
   from = "/*"

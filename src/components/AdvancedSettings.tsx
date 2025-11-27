@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Settings, Eye, EyeOff, Key } from 'lucide-react';
+import { Settings, Eye, EyeOff, Key, Shield } from 'lucide-react';
+import { SecurityInfoModal } from './SecurityInfoModal';
 
 interface AdvancedSettingsProps {
   onApiKeyChange: (key: string) => void;
@@ -12,6 +13,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
   const [isOpen, setIsOpen] = useState(forceOpen || false);
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
 
   // Load API key from localStorage on mount
   useEffect(() => {
@@ -94,11 +96,21 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
       {(isOpen || forceOpen) && (
         <div className="mt-md p-md bg-white border border-gray-300">
           <div className="space-y-sm">
-            <div className="flex items-center gap-2">
-              <Key className="w-4 h-4 text-accent" />
-              <label className="text-small uppercase-mds font-medium text-gray-700">
-                Gemini API Key {required && <span className="text-gray-700">*</span>}
-              </label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Key className="w-4 h-4 text-accent" />
+                <label className="text-small uppercase-mds font-medium text-gray-700">
+                  Gemini API Key {required && <span className="text-gray-700">*</span>}
+                </label>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSecurityModalOpen(true)}
+                className="flex items-center gap-1 text-small text-accent hover:underline transition-colors"
+              >
+                <Shield className="w-3 h-3" />
+                Is my key secure?
+              </button>
             </div>
             <p className="text-small text-gray-700">
               {required 
@@ -174,6 +186,10 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
           </div>
         </div>
       )}
+      <SecurityInfoModal
+        isOpen={isSecurityModalOpen}
+        onClose={() => setIsSecurityModalOpen(false)}
+      />
     </div>
   );
 }
