@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Eye, EyeOff, Key, Shield } from 'lucide-react';
+import { Settings, Key, Shield } from 'lucide-react';
 import { SecurityInfoModal } from './SecurityInfoModal';
 
 interface AdvancedSettingsProps {
@@ -12,7 +12,6 @@ interface AdvancedSettingsProps {
 export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required }: AdvancedSettingsProps) {
   const [isOpen, setIsOpen] = useState(forceOpen || false);
   const [apiKey, setApiKey] = useState('');
-  const [showKey, setShowKey] = useState(false);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
 
   // Load API key from localStorage on mount
@@ -121,7 +120,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
             <div className="relative">
               {(required || isOpen) && (
                 <input
-                  type={showKey ? "text" : "password"}
+                  type="text"
                   value={apiKey}
                   onChange={(e) => handleKeyChange(e.target.value)}
                   placeholder="Enter API Key Here..."
@@ -135,18 +134,10 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                   data-form-type="other"
                   data-1p-ignore="true"
                   data-bwignore="true"
-                  className="w-full p-2 pr-10 border border-gray-500 text-small bg-white focus:outline-none focus:border-accent focus:border-2"
+                  className="w-full p-2 border border-gray-500 text-small bg-white focus:outline-none focus:border-accent focus:border-2"
                   disabled={disabled}
                 />
               )}
-              <button
-                type="button"
-                onClick={() => setShowKey(!showKey)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700 hover:text-black transition-colors"
-                disabled={disabled}
-              >
-                {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
             </div>
             {apiKey && (
               <div className="flex items-center justify-between text-small text-green-700">

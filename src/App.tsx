@@ -1,11 +1,12 @@
 import { useState, useCallback } from 'react'
-import { Calculator } from 'lucide-react'
+import { Calculator, Image } from 'lucide-react'
 import { ImageUploader } from '@/components/ImageUploader'
 import { ResultsDisplay } from '@/components/ResultsDisplay'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { AdvancedSettings } from '@/components/AdvancedSettings'
 import { Lightbox } from '@/components/Lightbox'
+import { ExamplesModal } from '@/components/ExamplesModal'
 import { parseImage, fileToBase64 } from '@/lib/api'
 import type { AnyPriceData } from '@/lib/api'
 
@@ -17,6 +18,7 @@ function App() {
   const [error, setError] = useState<string>('')
   const [userApiKey, setUserApiKey] = useState('')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const [isExamplesModalOpen, setIsExamplesModalOpen] = useState(false)
   const [clearTrigger, setClearTrigger] = useState(0)
 
   // BYOK solution - always require user key
@@ -198,6 +200,17 @@ function App() {
                 disabled={state === 'loading' || isUploadDisabled}
               />
 
+              {/* See Examples Link */}
+              <div className="text-center">
+                <button
+                  onClick={() => setIsExamplesModalOpen(true)}
+                  className="inline-flex items-center gap-1 text-small text-accent hover:underline transition-colors"
+                >
+                  <Image className="w-4 h-4" />
+                  See example results
+                </button>
+              </div>
+
               {isUploadDisabled && (
                 <div className="text-center">
                   <p className="text-small text-gray-700">
@@ -228,6 +241,12 @@ function App() {
         onClose={() => setIsLightboxOpen(false)}
         imageSrc="https://micxjfgioqawfvwsxqfe.supabase.co/storage/v1/object/public/images/how_it_started.jpeg"
         imageAlt="How Fal-culator started - from a Twitter conversation to a working product"
+      />
+
+      {/* EXAMPLES MODAL */}
+      <ExamplesModal
+        isOpen={isExamplesModalOpen}
+        onClose={() => setIsExamplesModalOpen(false)}
       />
     </div>
   )
