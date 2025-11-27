@@ -56,34 +56,32 @@ const LegacyPriceSchema = {
   required: ["cost_per_image", "runs_per_dollar"],
 };
 
-// Fal.ai handler using their any-llm endpoint with Gemini model
+// Fal.ai handler using openrouter/router/vision endpoint with native image support
 async function handleFalaiRequest(
   imageBase64: string, 
   apiKey: string, 
   corsHeaders: Record<string, string>
 ): Promise<Response> {
-  console.log("Processing request with Fal.ai provider");
+  console.log("Processing request with Fal.ai OpenRouter Vision endpoint");
   
   try {
-    // Fal.ai any-llm endpoint with Gemini Flash 2.0
-    // Note: This endpoint may have limited vision support compared to direct Gemini API
-    const falResponse = await fetch("https://fal.run/fal-ai/any-llm", {
+    // OpenRouter Vision endpoint - supports native image_urls parameter
+    // Using Gemini 2.5 Flash for best price/performance
+    const falResponse = await fetch("https://fal.run/openrouter/router/vision", {
       method: "POST",
       headers: {
         "Authorization": `Key ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash-001",
-        prompt: `You are an expert data extraction agent. Analyze the provided image (base64 encoded) from a fal.ai model page and extract pricing information.
-
-The image is base64 encoded: ${imageBase64.substring(0, 100)}... (truncated for prompt)
+        model: "google/gemini-2.5-flash-preview-05-20",
+        prompt: `You are an expert data extraction agent. Analyze this screenshot from a fal.ai model page and extract pricing information.
 
 Your Task:
 1. Identify the pricing_unit: PER_MEGAPIXEL, PER_IMAGE, PER_SECOND_VIDEO, PER_VIDEO, PER_SECOND_GPU, FREE, or UNKNOWN
 2. Extract the base_cost as a number
 3. Find gpu_type if applicable (only for PER_SECOND_GPU)
-4. List all resolutions if visible
+4. List all resolutions if visible in dropdown menus
 
 Return ONLY valid JSON in this exact format:
 {
@@ -94,6 +92,7 @@ Return ONLY valid JSON in this exact format:
   "schema_version": "v2"
 }`,
         system_prompt: "You are a JSON extraction expert. Always respond with valid JSON only, no markdown or explanation.",
+        image_urls: [`data:image/png;base64,${imageBase64}`],
       }),
     });
 
@@ -109,13 +108,11 @@ Return ONLY valid JSON in this exact format:
         );
       }
       
-      // Note: Fal.ai's any-llm endpoint may not support image inputs
-      // If this fails, user may need to use Gemini directly
       return new Response(
         JSON.stringify({ 
-          error: "Fal.ai any-llm endpoint does not support image analysis. Please use Google Gemini provider instead, or check if your fal.ai plan includes vision models." 
+          error: `Fal.ai OpenRouter Vision request failed (${falResponse.status}). Please check your API key or try Google Gemini provider.` 
         }),
-        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: falResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -139,7 +136,7 @@ Return ONLY valid JSON in this exact format:
       console.error("Failed to parse Fal.ai response as JSON:", responseText);
       return new Response(
         JSON.stringify({ 
-          error: "Could not extract pricing information. The Fal.ai any-llm endpoint may not support image analysis. Try using Google Gemini provider instead." 
+          error: "Could not extract pricing information from the image. Please ensure the screenshot shows fal.ai pricing details." 
         }),
         { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
