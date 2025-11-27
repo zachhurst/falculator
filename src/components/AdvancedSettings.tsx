@@ -112,8 +112,10 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                   type={showKey ? "text" : "password"}
                   value={apiKey}
                   onChange={(e) => handleKeyChange(e.target.value)}
-                  placeholder="Enter your key here..."
-                  autoComplete="new-password"
+                  placeholder="AIza..."
+                  name="gemini-api-token-field"
+                  id="gemini-api-token-field"
+                  autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck="false"
@@ -121,8 +123,6 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                   data-form-type="other"
                   data-1p-ignore="true"
                   data-bwignore="true"
-                  data-kwimpalastatus="true"
-                  data-ms-memberid="true"
                   className="w-full p-2 pr-10 border border-gray-500 text-small bg-white focus:outline-none focus:border-accent focus:border-2"
                   disabled={disabled}
                 />
