@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Calculator, Image } from 'lucide-react'
 import { ImageUploader } from '@/components/ImageUploader'
 import { ResultsDisplay } from '@/components/ResultsDisplay'
@@ -24,9 +24,15 @@ function App() {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false)
   const [clearTrigger, setClearTrigger] = useState(0)
+  const toolSectionRef = useRef<HTMLElement>(null)
 
   // BYOK solution - always require user key
   const isUploadDisabled = !apiKeyConfig;
+
+  // Smooth scroll to tool section
+  const scrollToTool = useCallback(() => {
+    toolSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [])
 
   const handleImageSelect = useCallback(async (file: File) => {
     setState('loading')
@@ -166,15 +172,15 @@ function App() {
             </div>
             
             <div className="mt-6 flex flex-col sm:flex-row gap-4">
-              <a 
-                href="#tool-section"
+              <button 
+                onClick={scrollToTool}
                 className="btn-primary-mds inline-flex items-center justify-center gap-2 px-6 py-3 hover:opacity-90 transition-opacity font-medium"
               >
                 Try Fal-culator
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
-              </a>
+              </button>
               
               <button
                 onClick={() => setIsExamplesModalOpen(true)}
@@ -189,7 +195,7 @@ function App() {
       </section>
 
       {/* TOOL SECTION - Full Width */}
-      <section id="tool-section" className="py-6 px-6 lg:px-10 max-w-4xl mx-auto">
+      <section ref={toolSectionRef} className="py-6 px-6 lg:px-10 max-w-4xl mx-auto">
         <div className="text-center mb-6">
           <h2 className="text-h2 mb-2">Calculate Your Costs</h2>
           <p className="text-body text-gray-700 max-w-lg mx-auto">
