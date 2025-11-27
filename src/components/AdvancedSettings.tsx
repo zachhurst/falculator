@@ -179,20 +179,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                     name="provider"
                     value="gemini"
                     checked={provider === 'gemini'}
-                    onChange={(e) => {
-                      const newProvider = e.target.value as AIProvider;
-                      setProvider(newProvider);
-                      
-                      // Load the key for the new provider
-                      const providerKey = localStorage.getItem(`falculator-api-key-${newProvider}`);
-                      if (providerKey) {
-                        setApiKey(providerKey);
-                        onApiKeyChange({ provider: newProvider, key: providerKey });
-                      } else {
-                        setApiKey('');
-                        onApiKeyChange(undefined);
-                      }
-                    }}
+                    onChange={() => setProvider('gemini')}
                     className="text-accent"
                     disabled={disabled}
                   />
@@ -204,20 +191,7 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
                     name="provider"
                     value="falai"
                     checked={provider === 'falai'}
-                    onChange={(e) => {
-                      const newProvider = e.target.value as AIProvider;
-                      setProvider(newProvider);
-                      
-                      // Load the key for the new provider
-                      const providerKey = localStorage.getItem(`falculator-api-key-${newProvider}`);
-                      if (providerKey) {
-                        setApiKey(providerKey);
-                        onApiKeyChange({ provider: newProvider, key: providerKey });
-                      } else {
-                        setApiKey('');
-                        onApiKeyChange(undefined);
-                      }
-                    }}
+                    onChange={() => setProvider('falai')}
                     className="text-accent"
                     disabled={disabled}
                   />
