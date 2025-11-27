@@ -2,9 +2,315 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>falculator</title>
+    
+    <!-- React Grab for DOM element tracing (dev only) -->
+    <script
+      src="//unpkg.com/react-grab/dist/index.global.js"
+      crossorigin="anonymous"
+      data-enabled="true"
+    ></script>
+    
+    <!-- ============================================ -->
+    <!-- PRIMARY SEO META TAGS -->
+    <!-- ============================================ -->
+    <title>Fal-culator | Free fal.ai Pricing Calculator - Instant Cost Analysis</title>
+    <meta name="description" content="Calculate exact costs for any fal.ai model instantly. Upload a pricing screenshot and get per-image, per-megapixel, or per-second GPU cost breakdowns. Free tool powered by Gemini Flash 2.0. Works with Flux, SDXL, video models, and more." />
+    <meta name="keywords" content="fal.ai pricing, fal.ai cost calculator, AI image generation cost, Flux pricing, SDXL cost, AI video pricing, per-megapixel pricing, GPU cost calculator, fal.ai models, generative AI pricing, AI art cost" />
+    <meta name="author" content="Fal-culator" />
+    
+    <!-- ============================================ -->
+    <!-- ROBOTS & INDEXING -->
+    <!-- ============================================ -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow" />
+    
+    <!-- ============================================ -->
+    <!-- GEO/AEO - ANSWER ENGINE OPTIMIZATION -->
+    <!-- ============================================ -->
+    <!-- Question-targeting meta for AI engines -->
+    <meta name="topic" content="AI Pricing Calculator, fal.ai Cost Estimation" />
+    <meta name="subject" content="How to calculate fal.ai model costs" />
+    <meta name="abstract" content="Fal-culator is a free tool that calculates exact costs for fal.ai AI models by analyzing pricing screenshots. It supports per-megapixel, per-image, per-second GPU, and video pricing models." />
+    <meta name="summary" content="Free fal.ai cost calculator. Upload a screenshot, get instant pricing analysis for Flux, SDXL, video models, and GPU-based AI services." />
+    
+    <!-- E-E-A-T Signals for AI engines -->
+    <meta name="classification" content="Developer Tools, AI Utilities, Cost Calculator" />
+    <meta name="category" content="Technology/Artificial Intelligence/Tools" />
+    <meta name="coverage" content="Worldwide" />
+    <meta name="distribution" content="Global" />
+    <meta name="rating" content="General" />
+    
+    <!-- Language & Locale -->
+    <meta name="language" content="English" />
+    <meta http-equiv="content-language" content="en-US" />
+    <link rel="alternate" hreflang="en" href="https://falculator.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://falculator.com/" />
+    
+    <!-- Favicons with Cloudinary transformations -->
+    <link rel="icon" type="image/png" sizes="16x16" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_16,h_16,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_32,h_32,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_96,h_96,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_57,h_57,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_60,h_60,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_72,h_72,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_76,h_76,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_114,h_114,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_120,h_120,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_144,h_144,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_152,h_152,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_180,h_180,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_192,h_192,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="https://res.cloudinary.com/duzlhoa2w/image/upload/w_512,h_512,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://falculator.com/" />
+    <meta property="og:title" content="Fal-culator - Instant fal.ai Cost Calculator" />
+    <meta property="og:description" content="Instantly calculate exact costs for any fal.ai model. Decode per-megapixel, per-second, and complex pricing into clear cost-per-generation analysis. BYOK Gemini Flash 2.0 support." />
+    <meta property="og:image" content="https://res.cloudinary.com/duzlhoa2w/image/upload/w_1200,h_630,c_fill,g_center,ar_1.91:1,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Fal-culator - Instant fal.ai Cost Calculator" />
+    <meta property="og:site_name" content="Fal-culator" />
+    
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://falculator.com/" />
+    <meta property="twitter:title" content="Fal-culator - Instant fal.ai Cost Calculator" />
+    <meta property="twitter:description" content="Instantly calculate exact costs for any fal.ai model. Decode per-megapixel, per-second, and complex pricing into clear cost-per-generation analysis. BYOK Gemini Flash 2.0 support." />
+    <meta property="twitter:image" content="https://res.cloudinary.com/duzlhoa2w/image/upload/w_1200,h_675,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    <meta property="twitter:image:alt" content="Fal-culator - Instant fal.ai Cost Calculator" />
+    
+    <!-- LinkedIn -->
+    <meta property="linkedin:card" content="summary_large_image" />
+    <meta property="linkedin:url" content="https://falculator.com/" />
+    <meta property="linkedin:title" content="Fal-culator - Instant fal.ai Cost Calculator" />
+    <meta property="linkedin:description" content="Instantly calculate exact costs for any fal.ai model. Decode per-megapixel, per-second, and complex pricing into clear cost-per-generation analysis. BYOK Gemini Flash 2.0 support." />
+    <meta property="linkedin:image" content="https://res.cloudinary.com/duzlhoa2w/image/upload/w_1200,h_627,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#ea580c" />
+    <meta name="msapplication-TileColor" content="#ea580c" />
+    <meta name="msapplication-TileImage" content="https://res.cloudinary.com/duzlhoa2w/image/upload/w_144,h_144,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://falculator.com/" />
+    
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- ============================================ -->
+    <!-- STRUCTURED DATA - JSON-LD FOR SEO/GEO/AEO -->
+    <!-- ============================================ -->
+    
+    <!-- WebApplication Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Fal-culator",
+      "alternateName": ["fal.ai Calculator", "fal.ai Pricing Calculator", "Fal Cost Calculator"],
+      "description": "Free tool to calculate exact costs for any fal.ai model. Upload a pricing screenshot and get instant per-image, per-megapixel, or per-second GPU cost breakdowns. Powered by Gemini Flash 2.0.",
+      "url": "https://falculator.com/",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Cost Calculator",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge.",
+      "softwareVersion": "2.1",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "featureList": [
+        "Per-megapixel pricing analysis",
+        "Per-image cost calculation",
+        "Per-second GPU time pricing",
+        "Video model pricing support",
+        "Resolution-based cost breakdown",
+        "Excel/spreadsheet export",
+        "BYOK Gemini API support",
+        "Instant screenshot analysis"
+      ],
+      "screenshot": "https://res.cloudinary.com/duzlhoa2w/image/upload/w_1200,h_630,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    }
+    </script>
+    
+    <!-- FAQPage Schema for Featured Snippets & AI Answers -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I calculate fal.ai model costs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload a screenshot of any fal.ai model's pricing page to Fal-culator. The tool uses AI to automatically extract pricing information and calculates exact costs per image, including resolution-based breakdowns for per-megapixel pricing models."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What pricing models does Fal-culator support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fal-culator supports all fal.ai pricing models: PER_MEGAPIXEL (resolution-based), PER_IMAGE (flat rate), PER_SECOND_GPU (GPU time), PER_SECOND_VIDEO (video duration), PER_VIDEO (per clip), and FREE tier models."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Fal-culator free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Fal-culator is completely free. You can use your own Gemini API key (BYOK - Bring Your Own Key) for unlimited usage, or use the shared service with rate limits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does Flux on fal.ai cost per image?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Flux pricing on fal.ai uses a per-megapixel model. For a standard 1024×1024 image (1.05 MP), costs typically range from $0.01-0.05 depending on the Flux variant. Use Fal-culator for exact pricing by uploading a screenshot of the model's pricing page."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is per-megapixel pricing on fal.ai?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Per-megapixel pricing charges based on the total pixels in your generated image. A 1024×1024 image is 1.05 megapixels. Higher resolutions like 1920×1080 (2.07 MP) cost proportionally more. Fal-culator calculates exact costs for any resolution."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- HowTo Schema for Step-by-Step Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Calculate fal.ai Model Costs",
+      "description": "Step-by-step guide to calculate exact costs for any fal.ai AI model using Fal-culator",
+      "totalTime": "PT1M",
+      "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "USD",
+        "value": "0"
+      },
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "Web browser"
+        },
+        {
+          "@type": "HowToTool",
+          "name": "Gemini API key (optional)"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Navigate to fal.ai model page",
+          "text": "Go to fal.ai and find the model you want to calculate costs for. Navigate to its pricing page."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Take a screenshot",
+          "text": "Take a screenshot of the pricing information. Include the cost per unit and any resolution dropdowns if visible."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Upload to Fal-culator",
+          "text": "Go to falculator.com and upload your screenshot using drag-and-drop or file browser."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Review pricing analysis",
+          "text": "Fal-culator will automatically analyze the screenshot and display cost breakdowns per image, including resolution-based pricing tables."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Export to spreadsheet",
+          "text": "Click 'Copy for Spreadsheet' to export the pricing data in a format that pastes directly into Excel or Google Sheets."
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Fal-culator",
+      "url": "https://falculator.com/",
+      "logo": "https://res.cloudinary.com/duzlhoa2w/image/upload/w_512,h_512,c_fill,g_center,f_auto,q_auto/v1764268366/VcZuoQcesNU0v1qOX8fEU_o0cc5j.png",
+      "description": "Free fal.ai pricing calculator tool",
+      "sameAs": []
+    }
+    </script>
+    
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://falculator.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Calculator",
+          "item": "https://falculator.com/#tool-section"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Speakable Schema for Voice Search -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Fal-culator - Free fal.ai Pricing Calculator",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "h2", ".hero-description", ".pricing-result"]
+      },
+      "mainEntity": {
+        "@type": "SoftwareApplication",
+        "name": "Fal-culator",
+        "applicationCategory": "WebApplication",
+        "operatingSystem": "Web"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

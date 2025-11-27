@@ -1,15 +1,17 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { Upload, Image as ImageIcon, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface ImageUploaderProps {
   onImageSelect: (file: File) => void
+  onImageClear?: () => void
+  clearTrigger?: number
   disabled?: boolean
 }
 
 const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
 
-export function ImageUploader({ onImageSelect, disabled }: ImageUploaderProps) {
+export function ImageUploader({ onImageSelect, onImageClear, clearTrigger, disabled }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
 
@@ -31,33 +33,49 @@ export function ImageUploader({ onImageSelect, disabled }: ImageUploaderProps) {
     e.preventDefault()
     setIsDragging(false)
     
+    if (disabled) return
+    
     const file = e.dataTransfer.files[0]
     if (file) handleFile(file)
-  }, [handleFile])
+  }, [handleFile, disabled])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
+    if (disabled) return
     setIsDragging(true)
-  }, [])
+  }, [disabled])
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault()
+    if (disabled) return
     setIsDragging(false)
-  }, [])
+  }, [disabled])
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return
+    
     const file = e.target.files?.[0]
     if (file) handleFile(file)
-  }, [handleFile])
+  }, [handleFile, disabled])
 
   const clearPreview = useCallback(() => {
     setPreview(null)
-  }, [])
+    // Also clear results when image is cleared
+    onImageClear?.()
+  }, [onImageClear])
+
+  // Clear preview when clearTrigger changes
+  useEffect(() => {
+    if (clearTrigger !== undefined && clearTrigger > 0) {
+      console.log('Clear trigger detected, clearing preview')
+      clearPreview()
+    }
+  }, [clearTrigger, clearPreview])
 
   if (preview) {
     return (
       <div className="relative w-full max-w-lg mx-auto">
-        <div className="relative rounded-lg overflow-hidden border border-border bg-card shadow-sm">
+        <div className="relative overflow-hidden border border-gray-300 bg-white p-md">
           <img 
             src={preview} 
             alt="Preview" 
@@ -66,10 +84,10 @@ export function ImageUploader({ onImageSelect, disabled }: ImageUploaderProps) {
           {!disabled && (
             <button
               onClick={clearPreview}
-              className="absolute top-2 right-2 p-1.5 bg-background/80 hover:bg-background rounded-full transition-colors"
+              className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white transition-colors"
               aria-label="Remove image"
             >
-              <X className="w-4 h-4 text-foreground" />
+              <X className="w-4 h-4 text-black" />
             </button>
           )}
         </div>
@@ -83,11 +101,11 @@ export function ImageUploader({ onImageSelect, disabled }: ImageUploaderProps) {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       className={cn(
-        "relative w-full max-w-lg mx-auto p-8 rounded-lg border-2 border-dashed transition-all duration-200 cursor-pointer",
+        "relative w-full max-w-lg mx-auto p-lg border-2 border-dashed transition-all duration-200 cursor-pointer",
         isDragging 
-          ? "border-primary bg-primary/5" 
-          : "border-border hover:border-primary/50 hover:bg-secondary/50",
-        disabled && "opacity-50 cursor-not-allowed"
+          ? "border-accent bg-gray-50" 
+          : "border-gray-500 hover:border-gray-700 hover:bg-gray-50",
+        disabled && "opacity-50 cursor-not-allowed pointer-events-none"
       )}
     >
       <input
@@ -97,22 +115,22 @@ export function ImageUploader({ onImageSelect, disabled }: ImageUploaderProps) {
         disabled={disabled}
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
       />
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="p-4 rounded-full bg-primary/10">
+      <div className="flex flex-col items-center gap-md text-center">
+        <div className="p-4 bg-charcoal/10">
           {isDragging ? (
-            <ImageIcon className="w-8 h-8 text-primary" />
+            <ImageIcon className="w-8 h-8 text-accent" />
           ) : (
-            <Upload className="w-8 h-8 text-primary" />
+            <Upload className="w-8 h-8 text-accent" />
           )}
         </div>
         <div>
-          <p className="text-lg font-medium text-foreground">
+          <p className="text-h4 uppercase-mds letter-spacing-tight text-black">
             {isDragging ? 'Drop your image here' : 'Upload a screenshot'}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-small text-gray-700">
             Drag and drop or click to browse
           </p>
-          <p className="mt-2 text-xs text-muted">
+          <p className="mt-2 text-small text-gray-700">
             Supports PNG, JPG, JPEG, WebP
           </p>
         </div>

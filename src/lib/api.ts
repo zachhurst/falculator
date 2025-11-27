@@ -1,27 +1,67 @@
+// v1 Legacy interface (for backward compatibility)
+export interface LegacyPriceData {
+  cost_per_image: number;
+  runs_per_dollar: number;
+}
+
+// v2 New interface
+export type PricingUnit = 
+  | "PER_MEGAPIXEL" | "PER_IMAGE" | "PER_SECOND_VIDEO"
+  | "PER_VIDEO" | "PER_SECOND_GPU" | "FREE" | "UNKNOWN";
+
+export interface Resolution {
+  name: string;
+  width: number;
+  height: number;
+}
+
 export interface PriceData {
-  cost_per_image: number
-  runs_per_dollar: number
+  pricing_unit: PricingUnit;
+  base_cost: number;
+  gpu_type?: string | null;
+  resolutions?: Resolution[] | null;
+  schema_version?: "v1" | "v2"; // Add version tracking
+}
+
+// Union type for handling both schemas
+export type AnyPriceData = LegacyPriceData | PriceData;
+
+// Type guard to distinguish v1 vs v2 responses
+export function isPriceDataV2(data: AnyPriceData): data is PriceData {
+  return 'pricing_unit' in data && 'base_cost' in data;
 }
 
 export interface ApiResponse {
   success: boolean
-  data?: PriceData
+  data?: AnyPriceData; // Support both v1 and v2 during transition
   error?: string
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export async function parseImage(imageBase64: string): Promise<ApiResponse> {
+export async function parseImage(
+  imageBase64: string,
+  userApiKey?: string
+): Promise<ApiResponse> {
   try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    };
+    if (userApiKey) {
+      headers['x-gemini-key'] = userApiKey;
+    }
+
     const response = await fetch(`${SUPABASE_URL}/functions/v1/image-parser`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers,
       body: JSON.stringify({ image: imageBase64 }),
     })
+
+    if (response.status === 429) {
+      throw new Error('Rate limit exceeded. Please add your own Gemini API key in Advanced Settings.');
+    }
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
