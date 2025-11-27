@@ -99,9 +99,8 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
   const getDisplayValue = () => {
     if (!apiKey) return '';
     if (isKeyFocused) return apiKey; // Show real key when revealed
-    // Mask with asterisks, show first 4 chars for identification
-    if (apiKey.length <= 4) return '*'.repeat(apiKey.length);
-    return apiKey.substring(0, 4) + '*'.repeat(apiKey.length - 4);
+    // Mask entirely with asterisks for security
+    return '*'.repeat(Math.min(apiKey.length, 32));
   };
 
   const toggleKeyVisibility = () => {
