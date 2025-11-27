@@ -1,6 +1,6 @@
 # Fal-culator
 
-A simple utility that extracts pricing information from fal.ai screenshots using Google's Gemini AI. Born from a Twitter conversation about confusing fal.ai pricing, built in 48 hours over Thanksgiving weekend.
+A simple utility that extracts pricing information from fal.ai screenshots using Google's Gemini AI. Born from a Twitter conversation about confusing fal.ai pricing, built in 16 hours over Thanksgiving weekend.
 
 > "Not everyone wants to do equations to know price" - @atwilkinson_  
 > "Maybe a Thanksgiving project? 🤔" - @zachhurst
@@ -159,4 +159,4 @@ MIT License - feel free to use this code for your own projects.
 
 ---
 
-**Built with ❤️ in 48 hours over Thanksgiving weekend**
+**Built with ❤️ in 16 hours over Thanksgiving weekend**

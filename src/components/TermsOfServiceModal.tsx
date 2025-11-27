@@ -52,7 +52,7 @@ export function TermsOfServiceModal({ isOpen, onClose }: TermsOfServiceModalProp
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          <p className="text-small text-gray-500">Last updated: November 27, 2024</p>
+          <p className="text-small text-gray-500">Last updated: November 27, 2025</p>
 
           <section className="space-y-2">
             <h3 className="text-body font-medium">The Short Version</h3>

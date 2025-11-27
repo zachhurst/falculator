@@ -93,7 +93,7 @@ function App() {
               How It Started
             </h2>
             <h3 className="text-2xl font-medium text-black mb-4">
-              From Tweet to Tool in 48 Hours
+              From Tweet to Tool in 16 Hours
             </h3>
             <p className="text-small text-gray-700 mb-4 leading-relaxed">
               A Twitter conversation about confusing fal.ai pricing turned into a Thanksgiving weekend project. Two days later, Fal-culator was born.
