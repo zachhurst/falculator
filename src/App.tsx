@@ -215,7 +215,7 @@ function App() {
               {isUploadDisabled && (
                 <div className="text-center">
                   <p className="text-small text-gray-700">
-                    Please add your Gemini API key above to enable image uploads
+                    Please add your {apiKeyConfig?.provider === 'falai' ? 'Fal.ai' : 'Google Gemini'} API key above to enable image uploads
                   </p>
                 </div>
               )}
