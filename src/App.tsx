@@ -96,7 +96,7 @@ function App() {
               From Tweet to Tool in 16 Hours
             </h3>
             <p className="text-small text-gray-700 mb-4 leading-relaxed">
-              A Twitter conversation about confusing fal.ai pricing turned into a Thanksgiving weekend project. Two days later, Fal-culator was born.
+              A Twitter conversation about confusing fal.ai pricing turned into a Thanksgiving weekend project. 16 hours later, Fal-culator was born.
             </p>
             <div className="border border-gray-300 cursor-pointer hover:border-gray-500 transition-colors"
                  onClick={() => setIsLightboxOpen(true)}>
