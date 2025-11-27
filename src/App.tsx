@@ -161,16 +161,24 @@ function App() {
               </div>
             </div>
             
-            <div className="mt-6">
+            <div className="mt-6 flex flex-col sm:flex-row gap-4">
               <a 
                 href="#tool-section"
-                className="btn-primary-mds inline-flex items-center gap-2 px-6 py-3 hover:opacity-90 transition-opacity font-medium"
+                className="btn-primary-mds inline-flex items-center justify-center gap-2 px-6 py-3 hover:opacity-90 transition-opacity font-medium"
               >
                 Try Fal-culator
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
               </a>
+              
+              <button
+                onClick={() => setIsExamplesModalOpen(true)}
+                className="btn-primary-mds inline-flex items-center justify-center gap-2 px-6 py-3 hover:opacity-90 transition-opacity font-medium"
+              >
+                <Image className="w-4 h-4" />
+                See Examples
+              </button>
             </div>
           </div>
         </aside>
@@ -199,17 +207,6 @@ function App() {
                 clearTrigger={clearTrigger}
                 disabled={state === 'loading' || isUploadDisabled}
               />
-
-              {/* See Examples Link */}
-              <div className="text-center">
-                <button
-                  onClick={() => setIsExamplesModalOpen(true)}
-                  className="inline-flex items-center gap-1 text-small text-accent hover:underline transition-colors"
-                >
-                  <Image className="w-4 h-4" />
-                  See example results
-                </button>
-              </div>
 
               {isUploadDisabled && (
                 <div className="text-center">
