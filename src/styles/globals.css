@@ -13,9 +13,7 @@
   font-display: swap;
 }
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import 'tailwindcss';
 
 /* 1. Foundational Rules - Non-negotiable MDS principles */
 :root {
