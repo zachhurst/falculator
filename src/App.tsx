@@ -122,7 +122,7 @@ function App() {
             </div>
             <h2 className="text-2xl font-medium mb-3">Stop Guessing. Start Creating.</h2>
             <p className="text-body text-gray-700 mb-6">
-              Instantly calculate the *exact* cost for any fal.ai model across images, video, and GPU time. Decode complex pricing from per-megapixel to per-second billing, with full resolution breakdowns for optimal cost-performance decisions—and keep everything powered by your own Gemini Flash 2.0 API key (BYOK).
+              Instantly calculate the *exact* cost for any fal.ai model across images, video, and GPU time. Decode complex pricing from per-megapixel to per-second billing, with full resolution breakdowns for optimal cost-performance decisions—and keep everything powered by your own API key (BYOK) with your choice of Google Gemini or Fal.ai providers.
             </p>
             
             <div className="space-y-3">
