@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Calculator } from 'lucide-react'
 import { ImageUploader } from '@/components/ImageUploader'
 import { ResultsDisplay } from '@/components/ResultsDisplay'
@@ -16,45 +16,11 @@ function App() {
   const [result, setResult] = useState<AnyPriceData | null>(null)
   const [error, setError] = useState<string>('')
   const [userApiKey, setUserApiKey] = useState('')
-  const [serverKeyAvailable, setServerKeyAvailable] = useState<boolean | null>(null)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [clearTrigger, setClearTrigger] = useState(0)
 
-  // Check if server key is available on mount
-  useEffect(() => {
-    const checkServerKey = async () => {
-      // Check cache first
-      const cached = sessionStorage.getItem('serverKeyAvailable');
-      if (cached !== null) {
-        setServerKeyAvailable(cached === 'true');
-        return;
-      }
-
-      try {
-        // Try a minimal request to see if server key exists
-        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/image-parser`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ image: 'fake' }),
-        })
-        
-        const isAvailable = !(response.status === 500);
-        setServerKeyAvailable(isAvailable);
-        sessionStorage.setItem('serverKeyAvailable', isAvailable.toString());
-      } catch {
-        setServerKeyAvailable(true); // Assume available if we can't check
-        sessionStorage.setItem('serverKeyAvailable', 'true');
-      }
-    }
-
-    checkServerKey()
-  }, [])
-
-  // Check if upload should be disabled
-  const isUploadDisabled = serverKeyAvailable === false && !userApiKey;
+  // BYOK solution - always require user key
+  const isUploadDisabled = !userApiKey;
 
   const handleImageSelect = useCallback(async (file: File) => {
     setState('loading')
@@ -218,18 +184,11 @@ function App() {
         </div>
 
         <div className="space-y-4">
-          {serverKeyAvailable === null ? (
-            <div className="text-center py-6">
-              <LoadingSpinner />
-              <p className="text-small text-gray-700 mt-2">Checking service availability...</p>
-            </div>
-          ) : (
-            <>
               <AdvancedSettings 
                 onApiKeyChange={setUserApiKey}
                 disabled={state === 'loading'}
-                forceOpen={serverKeyAvailable === false}
-                required={serverKeyAvailable === false}
+                forceOpen={true}
+                required={true}
               />
 
               <ImageUploader 
@@ -246,18 +205,13 @@ function App() {
                   </p>
                 </div>
               )}
-
               {state === 'loading' && <LoadingSpinner />}
-              
               {state === 'success' && result && (
                 <ResultsDisplay data={result} onClear={handleClearResults} />
               )}
-              
               {state === 'error' && (
                 <ErrorMessage message={error} onRetry={handleRetry} />
               )}
-            </>
-          )}
         </div>
       </section>
 
