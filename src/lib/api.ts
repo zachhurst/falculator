@@ -38,7 +38,7 @@ export interface ApiResponse {
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://micxjfgioqawfvwsxqfe.supabase.co'
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1pY3hqZmdpb3Fhd2Z2d3N4cWZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDY0MTgsImV4cCI6MjA3OTc4MjQxOH0.2orXFIYVBkXA2lblGCAZD0LIkk9qrxqFtrAEe4OAr7k'
 
 export async function parseImage(
   imageBase64: string,
