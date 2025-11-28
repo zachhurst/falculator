@@ -9,6 +9,7 @@ import { Lightbox } from '@/components/Lightbox'
 import { ExamplesModal } from '@/components/ExamplesModal'
 import { PrivacyPolicyModal } from '@/components/PrivacyPolicyModal'
 import { TermsOfServiceModal } from '@/components/TermsOfServiceModal'
+import FAQModal from '@/components/FAQModal'
 import { parseImage, fileToBase64 } from '@/lib/api'
 import type { AnyPriceData, ApiKeyConfig } from '@/lib/api'
 
@@ -23,6 +24,7 @@ function App() {
   const [isExamplesModalOpen, setIsExamplesModalOpen] = useState(false)
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false)
+  const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
   const [clearTrigger, setClearTrigger] = useState(0)
   const toolSectionRef = useRef<HTMLElement>(null)
 
@@ -96,7 +98,7 @@ function App() {
               From Tweet to Tool in 16 Hours
             </h3>
             <p className="text-small text-gray-700 mb-4 leading-relaxed">
-              A Twitter conversation about confusing fal.ai pricing turned into a Thanksgiving weekend project. 1 day later, Fal-culator was born.
+              A Twitter conversation about confusing fal.ai pricing turned into a Thanksgiving weekend project. 1 day later, Fal-culator was born!
             </p>
             <div className="border border-gray-300 cursor-pointer hover:border-gray-500 transition-colors"
                  onClick={() => setIsLightboxOpen(true)}>
@@ -254,6 +256,13 @@ function App() {
           >
             Terms of Service
           </button>
+          <span className="text-gray-300">|</span>
+          <button
+            onClick={() => setIsFAQModalOpen(true)}
+            className="text-gray-500 hover:text-black transition-colors"
+          >
+            FAQ
+          </button>
         </div>
         <p className="text-xs text-gray-400 max-w-md mx-auto">
           <strong>Disclaimer:</strong> Fal-culator is an independent utility tool and is not affiliated with, endorsed by, or officially connected to fal.ai.
@@ -284,6 +293,12 @@ function App() {
       <TermsOfServiceModal
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
+      />
+
+      {/* FAQ MODAL */}
+      <FAQModal
+        isOpen={isFAQModalOpen}
+        onClose={() => setIsFAQModalOpen(false)}
       />
     </div>
   )

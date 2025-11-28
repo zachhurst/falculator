@@ -139,7 +139,7 @@ export function TermsOfServiceModal({ isOpen, onClose }: TermsOfServiceModalProp
             <h3 className="text-body font-medium">Contact</h3>
             <p className="text-small text-gray-700 leading-relaxed">
               This project is maintained by an individual developer. For questions or concerns, 
-              please check the GitHub repository.
+              please check the <a href="https://github.com/zachhurst/falculator" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">GitHub repository</a>.
             </p>
           </section>
         </div>

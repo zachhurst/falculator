@@ -31,7 +31,7 @@ A simple utility that extracts pricing information from fal.ai screenshots using
 
 - **Frontend**: React 18 + Vite + TypeScript + Tailwind CSS v4
 - **Backend**: Supabase Edge Functions (Deno runtime)
-- **AI**: Google Gemini 1.5 Flash API + Fal.ai OpenRouter Vision
+- **AI**: Google Gemini 2.0 Flash API + Fal.ai OpenRouter Vision (Gemini 2.5 Flash)
 - **Hosting**: Netlify (frontend) + Supabase (functions)
 - **Icons**: Lucide React
 - **Package Manager**: pnpm
@@ -152,7 +152,7 @@ MIT License - feel free to use this code for your own projects.
 
 - **@atwilkinson_** - For calling out confusing fal.ai pricing
 - **@GiusMarci** - For agreeing that per-second image pricing is weird
-- **Google** - For the Gemini 1.5 Flash API
+- **Google** - For the Gemini 2.0 Flash API
 - **Fal.ai** - For OpenRouter Vision and Gemini 2.5 Flash access
 - **Supabase** - For excellent Edge Functions
 - **fal.ai** - For the complex pricing that inspired this tool
