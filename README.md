@@ -138,6 +138,40 @@ If you're forking this project, you'll need to set up your own backend:
 - Images processed but never stored
 - API keys stored locally in browser only
 
+### Security Best Practices
+
+**🔐 Primary Security Control: Key Rotation**
+Our security model isn't about protecting persistent secrets—it's about minimizing exposure time. The safest approach:
+
+1. **Generate a key** just before using Fal-culator
+2. **Use it once** for your pricing analysis
+3. **Revoke immediately** after completion
+
+Keys live in memory for ~2 seconds (browser → edge function → provider), then are gone forever.
+
+**🛡️ Defense in Depth**
+- **HTTPS encryption** protects against passive eavesdropping
+- **Open source edge function** - audit the code yourself
+- **Memory-only processing** - no persistence, no logging
+- **Browser localStorage** - keys stay on your device
+
+**⚠️ Threat Model**
+We protect against:
+- Data harvesting and tracking
+- Persistent key storage
+- Server-side key leakage
+
+We don't protect against:
+- Nation-state MitM attacks (no HSM)
+- Compromised user devices
+- Provider-side key abuse
+
+**✅ You Control**
+- When keys are created
+- When keys are revoked  
+- Which provider to use
+- Your own API quotas and billing
+
 ## Deployment
 
 ### Netlify (Recommended)
