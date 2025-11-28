@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react'
-import { Calculator, Image } from 'lucide-react'
+import { Calculator, Image, Play } from 'lucide-react'
 import { ImageUploader } from '@/components/ImageUploader'
 import { ResultsDisplay } from '@/components/ResultsDisplay'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
@@ -10,6 +10,7 @@ import { ExamplesModal } from '@/components/ExamplesModal'
 import { PrivacyPolicyModal } from '@/components/PrivacyPolicyModal'
 import { TermsOfServiceModal } from '@/components/TermsOfServiceModal'
 import FAQModal from '@/components/FAQModal'
+import { VideoPlayerModal } from '@/components/VideoPlayerModal'
 import { parseImage, fileToBase64 } from '@/lib/api'
 import type { AnyPriceData, ApiKeyConfig } from '@/lib/api'
 
@@ -25,6 +26,7 @@ function App() {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false)
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false)
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
   const [clearTrigger, setClearTrigger] = useState(0)
   const toolSectionRef = useRef<HTMLElement>(null)
 
@@ -191,6 +193,14 @@ function App() {
                 <Image className="w-4 h-4" />
                 See Examples
               </button>
+              
+              <button
+                onClick={() => setIsVideoModalOpen(true)}
+                className="btn-secondary-mds inline-flex items-center justify-center gap-2 px-6 py-3 hover:opacity-90 transition-opacity font-medium"
+              >
+                <Play className="w-4 h-4" fill="currentColor" />
+                View Demo
+              </button>
             </div>
           </div>
         </aside>
@@ -299,6 +309,13 @@ function App() {
       <FAQModal
         isOpen={isFAQModalOpen}
         onClose={() => setIsFAQModalOpen(false)}
+      />
+
+      {/* VIDEO PLAYER MODAL */}
+      <VideoPlayerModal
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        videoId="oFBCk4kd8MA"
       />
     </div>
   )
