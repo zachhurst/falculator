@@ -80,8 +80,8 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
             </p>
             <ul className="text-small text-gray-700 space-y-1 list-disc list-inside">
               <li>Stored only in your browser's localStorage (on your device)</li>
-              <li>Transmitted directly to your chosen provider via HTTPS</li>
-              <li>Never stored on our servers or in any database</li>
+              <li>Sent via HTTPS to our Supabase Edge Function, then forwarded to your provider</li>
+              <li>Never stored, logged, or persisted on our servers</li>
               <li>Never logged or recorded</li>
             </ul>
             <p className="text-small text-gray-700 leading-relaxed">

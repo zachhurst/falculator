@@ -55,7 +55,7 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
         <div className="p-4 space-y-4">
           {/* Main paragraph */}
           <p className="text-body text-gray-700 leading-relaxed">
-            When you bring your own API key (Google Gemini or Fal.ai), it flows directly from your browser to your chosen provider — never touching our infrastructure. Your key is transmitted via a secure HTTPS connection and our backend simply forwards it to the selected API without storing or logging it.
+            When you bring your own API key (Google Gemini or Fal.ai), it is sent from your browser to our Supabase Edge Function over HTTPS, then immediately forwarded to your chosen provider. Your key is transmitted in a secure header and our backend does not store, log, or persist it in any way. The edge function code is open source so you can verify this behavior.
           </p>
 
           {/* Security Features */}
@@ -65,9 +65,9 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
                 <Lock className="w-4 h-4 text-accent" />
               </div>
               <div>
-                <h3 className="text-small font-medium uppercase-mds text-black">End-to-End Encryption</h3>
+                <h3 className="text-small font-medium uppercase-mds text-black">Encrypted in Transit</h3>
                 <p className="text-small text-gray-700 mt-1">
-                  Your API key is transmitted via HTTPS in the appropriate header (<code className="bg-gray-100 px-1">x-gemini-key</code> or <code className="bg-gray-100 px-1">x-falai-key</code>), encrypted in transit.
+                  Your API key travels via HTTPS from your browser → our edge function → your provider. Headers (<code className="bg-gray-100 px-1">x-gemini-key</code> or <code className="bg-gray-100 px-1">x-falai-key</code>) are encrypted in transit at every hop.
                 </p>
               </div>
             </div>
@@ -77,9 +77,9 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
                 <Server className="w-4 h-4 text-accent" />
               </div>
               <div>
-                <h3 className="text-small font-medium uppercase-mds text-black">Zero Storage</h3>
+                <h3 className="text-small font-medium uppercase-mds text-black">Zero Server Storage</h3>
                 <p className="text-small text-gray-700 mt-1">
-                  Your key is never saved to our databases, logs, or any persistent storage. It exists only in your browser's memory during the session.
+                  Your key is never saved to databases or logs. It passes through our edge function in memory only, then is immediately discarded. Locally, keys are stored in your browser's localStorage for convenience—clear them anytime via Advanced Settings.
                 </p>
               </div>
             </div>
@@ -100,7 +100,7 @@ export function SecurityInfoModal({ isOpen, onClose }: SecurityInfoModalProps) {
           {/* Summary */}
           <div className="bg-gray-50 p-3 mt-4 border-l-2 border-accent">
             <p className="text-small text-gray-700">
-              <strong className="text-black">Bottom line:</strong> You maintain complete control over your API key usage and billing. We provide only the image parsing service.
+              <strong className="text-black">Bottom line:</strong> Your key passes through our open-source edge function but is never stored or logged. You maintain full control over your API quota and billing.
             </p>
           </div>
         </div>

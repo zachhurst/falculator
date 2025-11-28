@@ -22,10 +22,11 @@ A simple utility that extracts pricing information from fal.ai screenshots using
 - **Responsive Design** - Works perfectly on desktop and mobile devices
 
 ### Security & Privacy
-- **Local Storage Only** - API keys stored in browser localStorage
-- **Direct to Google** - Keys transmitted directly to Google's servers
-- **No Server Storage** - Images processed but never saved
-- **Open Source** - Fully transparent codebase you can inspect
+- **BYOK Model** - Bring your own Gemini or Fal.ai API key
+- **Encrypted Transit** - Keys sent via HTTPS: browser → edge function → provider
+- **Zero Persistence** - Keys pass through memory only; never logged or stored server-side
+- **Browser Storage** - Keys cached in localStorage for convenience (clear anytime)
+- **Open Source** - Edge function code is public; verify key handling yourself
 
 ## Tech Stack
 
@@ -81,6 +82,25 @@ pnpm dev
 
 Visit `http://localhost:5173` and start using Fal-culator!
 
+### Fork Setup (For Contributors)
+
+If you're forking this project, you'll need to set up your own backend:
+
+1. **Create a Supabase project** at [supabase.com](https://supabase.com)
+2. **Deploy the edge function**:
+   ```bash
+   npx supabase functions deploy image-parser
+   ```
+3. **Set required secrets**:
+   ```bash
+   npx supabase secrets set GEMINI_API_KEY=your-gemini-key
+   npx supabase secrets set ALLOWED_ORIGIN=https://your-domain.netlify.app
+   ```
+4. **Update your `.env`** with your Supabase URL and anon key
+5. **Deploy frontend** to Netlify with environment variables set
+
+> **Note**: The app will not function without these environment variables configured. There are no hardcoded fallbacks.
+
 ## How It Works
 
 1. **Choose Provider** - Select Google Gemini or Fal.ai as your AI provider
@@ -100,9 +120,11 @@ Visit `http://localhost:5173` and start using Fal-culator!
 
 ### BYOK (Bring Your Own Key) Design
 - Users provide their own Gemini or Fal.ai API key
-- Keys never touch our servers
-- Direct browser → Provider API communication
+- Keys are sent via HTTPS header to our Supabase Edge Function
+- Edge function forwards key to selected provider (Gemini or Fal.ai)
+- Keys are never stored, logged, or persisted—memory only
 - Users stay on their own pricing quotas
+- Edge function code is open source for full transparency
 
 ### Multi-Provider Architecture
 - **Google Gemini**: Direct API integration with Gemini 2.0 Flash

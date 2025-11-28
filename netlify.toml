@@ -3,8 +3,15 @@
   publish = "dist"
 
 [build.environment]
-  # Disable secrets scanning - Supabase URL and anon key are public by design
-  # They are protected by Row Level Security policies, not secrecy
+  # Disable Netlify secrets scanning for Supabase public credentials
+  # 
+  # VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are PUBLIC by design:
+  # - Anon key is meant to be exposed in frontend code
+  # - Security comes from Supabase Row Level Security (RLS), not key secrecy
+  # - This is standard Supabase architecture, not a security issue
+  #
+  # Sensitive keys (GEMINI_API_KEY, ALLOWED_ORIGIN) are stored as
+  # Supabase Edge Function secrets, NOT in this repo or Netlify env vars.
   SECRETS_SCAN_ENABLED = "false"
 
 [[redirects]]

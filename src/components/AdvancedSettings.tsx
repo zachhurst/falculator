@@ -202,9 +202,13 @@ export function AdvancedSettings({ onApiKeyChange, disabled, forceOpen, required
             
             <p className="text-small text-gray-700">
               {required 
-                ? `An API key is required to use this service. Your key is only used for this session and is never stored.`
-                : `Bring your own API key (BYOK) to bypass shared rate limits and stay on your own quota. Your key is only used for this session and is never stored.`
+                ? `An API key is required to use this service. Your key is never stored server-side.`
+                : `Bring your own API key (BYOK) to bypass shared rate limits and stay on your own quota. Your key is never stored server-side.`
               }
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              Your key is saved in this browser's localStorage for convenience. 
+              Use "Clear Saved Key" to remove it at any time.
             </p>
             <div className="relative">
               {(required || isOpen) && (
