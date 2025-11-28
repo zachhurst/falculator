@@ -1,11 +1,17 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { GoogleGenerativeAI, SchemaType } from "npm:@google/generative-ai@^0.21.0";
 
+// CORS configuration - set ALLOWED_ORIGIN env var in production
+// Default to * for development/testing
+const allowedOrigin = Deno.env.get("ALLOWED_ORIGIN") || "*";
+
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": allowedOrigin,
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-gemini-key, x-falai-key",
 };
+
+console.log(`CORS configured for origin: ${allowedOrigin}`);
 
 const FalPricingSchema = {
   type: SchemaType.OBJECT,

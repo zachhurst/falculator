@@ -44,13 +44,24 @@ export interface ApiResponse {
   error?: string
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://micxjfgioqawfvwsxqfe.supabase.co'
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1pY3hqZmdpb3Fhd2Z2d3N4cWZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDY0MTgsImV4cCI6MjA3OTc4MjQxOH0.2orXFIYVBkXA2lblGCAZD0LIkk9qrxqFtrAEe4OAr7k'
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Missing required environment variables: VITE_SUPABASE_URL and/or VITE_SUPABASE_ANON_KEY')
+}
 
 export async function parseImage(
   imageBase64: string,
   apiKeyConfig?: ApiKeyConfig
 ): Promise<ApiResponse> {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return {
+      success: false,
+      error: 'Application not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.',
+    }
+  }
+
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
