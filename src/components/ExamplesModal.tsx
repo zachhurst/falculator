@@ -233,8 +233,8 @@ export function ExamplesModal({ isOpen, onClose }: ExamplesModalProps) {
               </div>
 
               {/* Results Table */}
-              <div className="border border-gray-300 overflow-hidden max-w-2xl">
-                <table className="w-full text-small">
+              <div className="border border-gray-300 max-w-full md:max-w-2xl overflow-x-auto">
+                <table className="w-full min-w-[480px] text-small">
                   <thead className="bg-gray-100">
                     <tr>
                       {example.results.headers.map((header, i) => (
